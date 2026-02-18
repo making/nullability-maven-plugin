@@ -181,7 +181,6 @@ After the nullability plugin runs, the `-Xplugin:ErrorProne` argument will conta
 ## Requirements
 
 - **JDK 22+** (recommended)
-- Maven 3.8.6+
 
 This plugin itself is compiled for Java 17, but the default dependencies have higher JDK requirements:
 
