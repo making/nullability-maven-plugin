@@ -193,9 +193,9 @@ The following table summarizes the minimum JDK version required to **run the bui
 
 | ErrorProne version | JSpecifyMode     | Minimum JDK |
 |--------------------|------------------|-------------|
-| 2.43.0+            | `true` (default) | **JDK 22+** |
-| 2.42.0             | `true`           | JDK 22+     |
-| 2.43.0+            | `false`          | JDK 21+     |
+| 2.43.0+ (default)  | `true` (default) | **JDK 22+** |
+| 2.42.0             | `true` (default) | JDK 22+     |
+| 2.43.0+ (default)  | `false`          | JDK 21+     |
 | 2.42.0             | `false`          | JDK 17+     |
 
 To use an older JDK, adjust the configuration accordingly:
