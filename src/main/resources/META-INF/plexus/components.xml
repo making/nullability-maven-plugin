@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component-set>
+	<components>
+		<component>
+			<role>org.apache.maven.AbstractMavenLifecycleParticipant</role>
+			<role-hint>nullability</role-hint>
+			<implementation>am.ik.maven.nullability.NullabilityLifecycleParticipant</implementation>
+			<requirements>
+				<requirement>
+					<role>org.codehaus.plexus.logging.Logger</role>
+					<field-name>logger</field-name>
+				</requirement>
+			</requirements>
+		</component>
+	</components>
+</component-set>

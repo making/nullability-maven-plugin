@@ -11,11 +11,19 @@ repository.
 ```
 
 ## Design Requirements
-- **Package**: `TBD` - Main package
+- **Package**: `am.ik.maven.nullability` - Main package
 
 ## Implemented Features
 
-TBD
+- Automatic configuration of ErrorProne and NullAway for nullability checking
+- Lifecycle participant (`NullabilityLifecycleParticipant`) injects compiler configuration before build plan is computed
+- No-op Mojo (`NullabilityMojo`) at `initialize` phase for plugin declaration and parameter documentation
+- Configurable checking modes: MAIN, TESTS, DISABLED
+- Support for `RequireExplicitNullMarking` check
+- Spring Contract and AssertJ ThrowingCallable custom contract annotations
+- Excludes test paths and generated sources by default
+- Preserves existing `maven-compiler-plugin` configuration
+- Integration tests via `maven-invoker-plugin`
 
 ## Development Requirements
 

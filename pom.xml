@@ -4,11 +4,12 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>am.ik.template</groupId>
-	<artifactId>java-lib</artifactId>
-	<version>0.2.1-SNAPSHOT</version>
-	<name>java-lib</name>
-	<description>A Java library template</description>
+	<groupId>am.ik.maven</groupId>
+	<artifactId>nullability-maven-plugin</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>maven-plugin</packaging>
+	<name>nullability-maven-plugin</name>
+	<description>A Maven plugin that configures ErrorProne and NullAway for nullability checking</description>
 
 	<properties>
 		<java.version>17</java.version>
@@ -16,6 +17,7 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.version>3.8.6</maven.version>
 		<spring-boot.version>4.0.2</spring-boot.version>
 	</properties>
 	<licenses>
@@ -26,12 +28,12 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>https://github.com/making/java-lib</url>
-		<connection>scm:git:git@github.com:making/java-lib.git</connection>
-		<developerConnection>scm:git:git@github.com:making/java-lib.git
+		<url>https://github.com/making/nullability-maven-plugin</url>
+		<connection>scm:git:git@github.com:making/nullability-maven-plugin.git</connection>
+		<developerConnection>scm:git:git@github.com:making/nullability-maven-plugin.git
 		</developerConnection>
 	</scm>
-	<url>https://github.com/making/java-lib</url>
+	<url>https://github.com/making/nullability-maven-plugin</url>
 
 	<developers>
 		<developer>
@@ -43,8 +45,22 @@
 	</developers>
 	<dependencies>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>${maven.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<version>${maven.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-annotations</artifactId>
+			<version>3.15.1</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -67,6 +83,11 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>3.15.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.5.4</version>
 			</plugin>
@@ -80,6 +101,30 @@
 						<inherited>true</inherited>
 						<goals>
 							<goal>validate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-invoker-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+					<settingsFile>src/it/settings.xml</settingsFile>
+					<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+					<streamLogsOnFailures>true</streamLogsOnFailures>
+					<goals>
+						<goal>clean</goal>
+						<goal>compile</goal>
+					</goals>
+				</configuration>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>install</goal>
+							<goal>run</goal>
 						</goals>
 					</execution>
 				</executions>
