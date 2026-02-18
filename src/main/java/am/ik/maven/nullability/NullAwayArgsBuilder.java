@@ -26,7 +26,7 @@ public final class NullAwayArgsBuilder {
 
 	private static final String SPRING_CONTRACT = "org.springframework.lang.Contract";
 
-	private static final String ASSERTJ_CONTRACT = "org.assertj.core.api.ThrowableAssert.ThrowingCallable";
+	private static final String ASSERTJ_CONTRACT = "org.assertj.core.internal.annotation.Contract";
 
 	private NullAwayArgsBuilder() {
 	}
