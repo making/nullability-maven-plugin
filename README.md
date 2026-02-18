@@ -69,17 +69,17 @@ NullAway will report an error if you try to return `null` from a method in a `@N
 
 All configuration parameters can be set either in the plugin `<configuration>` block or as Maven properties.
 
-| Parameter | Property | Default | Description |
-|-----------|----------|---------|-------------|
-| `errorProneVersion` | `nullability.errorProneVersion` | `2.47.0` | ErrorProne version |
-| `nullAwayVersion` | `nullability.nullAwayVersion` | `0.13.1` | NullAway version |
-| `mainChecking` | `nullability.mainChecking` | `true` | Enable nullability checking for main sources |
-| `testChecking` | `nullability.testChecking` | `false` | Enable nullability checking for test sources |
-| `requireExplicitNullMarking` | `nullability.requireExplicitNullMarking` | `true` | Enable `RequireExplicitNullMarking` check |
-| `springContractSupport` | `nullability.springContractSupport` | `true` | Add `org.springframework.lang.Contract` to custom contract annotations |
-| `jspecifyMode` | `nullability.jspecifyMode` | `true` | Enable NullAway's JSpecify mode (requires JDK 22+) |
-| `excludedPaths` | `nullability.excludedPaths` | `.*/target/generated-sources/.*` | Regex pattern for paths to exclude |
-| `skip` | `nullability.skip` | `false` | Skip the plugin |
+| Parameter                    | Property                                 | Default                          | Description                                                            |
+|------------------------------|------------------------------------------|----------------------------------|------------------------------------------------------------------------|
+| `errorProneVersion`          | `nullability.errorProneVersion`          | `2.47.0`                         | ErrorProne version                                                     |
+| `nullAwayVersion`            | `nullability.nullAwayVersion`            | `0.13.1`                         | NullAway version                                                       |
+| `mainChecking`               | `nullability.mainChecking`               | `true`                           | Enable nullability checking for main sources                           |
+| `testChecking`               | `nullability.testChecking`               | `false`                          | Enable nullability checking for test sources                           |
+| `requireExplicitNullMarking` | `nullability.requireExplicitNullMarking` | `true`                           | Enable `RequireExplicitNullMarking` check                              |
+| `springContractSupport`      | `nullability.springContractSupport`      | `true`                           | Add `org.springframework.lang.Contract` to custom contract annotations |
+| `jspecifyMode`               | `nullability.jspecifyMode`               | `true`                           | Enable NullAway's JSpecify mode (requires JDK 22+)                     |
+| `excludedPaths`              | `nullability.excludedPaths`              | `.*/target/generated-sources/.*` | Regex pattern for paths to exclude                                     |
+| `skip`                       | `nullability.skip`                       | `false`                          | Skip the plugin                                                        |
 
 ### Example: Custom configuration
 
@@ -193,12 +193,12 @@ These are constraints imposed by ErrorProne and NullAway, not by this plugin. Yo
 
 The following table summarizes the minimum JDK version required to **run the build** for each configuration combination:
 
-| ErrorProne version | JSpecifyMode | Minimum JDK |
-|---|---|---|
+| ErrorProne version        | JSpecifyMode     | Minimum JDK |
+|---------------------------|------------------|-------------|
 | 2.43.0+ (default: 2.47.0) | `true` (default) | **JDK 22+** |
-| 2.42.0 | `true` | JDK 22+ |
-| 2.43.0+ (default: 2.47.0) | `false` | JDK 21+ |
-| 2.42.0 | `false` | JDK 17+ |
+| 2.42.0                    | `true`           | JDK 22+     |
+| 2.43.0+ (default: 2.47.0) | `false`          | JDK 21+     |
+| 2.42.0                    | `false`          | JDK 17+     |
 
 To use an older JDK, adjust the configuration accordingly:
 
