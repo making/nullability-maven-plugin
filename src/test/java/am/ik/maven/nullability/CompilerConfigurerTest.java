@@ -17,6 +17,7 @@ package am.ik.maven.nullability;
 
 import java.util.Arrays;
 
+import org.apache.maven.MavenExecutionException;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
@@ -25,24 +26,31 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CompilerConfigurerTest {
 
 	@Test
-	void createsCompilerPluginWhenAbsent() {
+	void throwsWhenCompilerPluginAbsent() {
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
-		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
-
-		Plugin compilerPlugin = findCompilerPlugin(project);
-		assertThat(compilerPlugin).isNotNull();
-		assertThat(compilerPlugin.getArtifactId()).isEqualTo("maven-compiler-plugin");
+		assertThatThrownBy(() -> CompilerConfigurer.configure(project, NullabilityConfiguration.defaults()))
+			.isInstanceOf(MavenExecutionException.class)
+			.hasMessageContaining("maven-compiler-plugin 3.5+")
+			.hasMessageContaining("<build><plugins>");
 	}
 
 	@Test
-	void setsForkToTrue() {
+	void throwsWhenBuildIsNull() {
 		MavenProject project = new MavenProject();
-		project.setBuild(new Build());
+		assertThatThrownBy(() -> CompilerConfigurer.configure(project, NullabilityConfiguration.defaults()))
+			.isInstanceOf(MavenExecutionException.class)
+			.hasMessageContaining("maven-compiler-plugin 3.5+");
+	}
+
+	@Test
+	void setsForkToTrue() throws Exception {
+		MavenProject project = projectWithCompilerPlugin();
 		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
 
 		Xpp3Dom config = (Xpp3Dom) findCompilerPlugin(project).getConfiguration();
@@ -50,9 +58,8 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void addsAnnotationProcessorPaths() {
-		MavenProject project = new MavenProject();
-		project.setBuild(new Build());
+	void addsAnnotationProcessorPaths() throws Exception {
+		MavenProject project = projectWithCompilerPlugin();
 		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
 
 		Xpp3Dom config = (Xpp3Dom) findCompilerPlugin(project).getConfiguration();
@@ -74,9 +81,8 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void addsCompilerArgs() {
-		MavenProject project = new MavenProject();
-		project.setBuild(new Build());
+	void addsCompilerArgs() throws Exception {
+		MavenProject project = projectWithCompilerPlugin();
 		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
 
 		Xpp3Dom config = (Xpp3Dom) findCompilerPlugin(project).getConfiguration();
@@ -94,7 +100,7 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void preservesExistingAnnotationProcessorPaths() {
+	void preservesExistingAnnotationProcessorPaths() throws Exception {
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
 
@@ -126,7 +132,7 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void preservesExistingCompilerArgs() {
+	void preservesExistingCompilerArgs() throws Exception {
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
 
@@ -158,9 +164,8 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void doesNotDuplicateAnnotationProcessorPaths() {
-		MavenProject project = new MavenProject();
-		project.setBuild(new Build());
+	void doesNotDuplicateAnnotationProcessorPaths() throws Exception {
+		MavenProject project = projectWithCompilerPlugin();
 		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
 		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
 
@@ -170,9 +175,8 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void doesNotDuplicateCompilerArgs() {
-		MavenProject project = new MavenProject();
-		project.setBuild(new Build());
+	void doesNotDuplicateCompilerArgs() throws Exception {
+		MavenProject project = projectWithCompilerPlugin();
 		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
 		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
 
@@ -186,10 +190,9 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void configuresTestCompileExecutionWhenTestCheckingEnabled() {
+	void configuresTestCompileExecutionWhenTestCheckingEnabled() throws Exception {
 		NullabilityConfiguration config = NullabilityConfiguration.builder().checking(Checking.TESTS).build();
-		MavenProject project = new MavenProject();
-		project.setBuild(new Build());
+		MavenProject project = projectWithCompilerPlugin();
 		CompilerConfigurer.configure(project, config);
 
 		Plugin compilerPlugin = findCompilerPlugin(project);
@@ -212,9 +215,8 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void noTestCompileExecutionWhenCheckingIsMain() {
-		MavenProject project = new MavenProject();
-		project.setBuild(new Build());
+	void noTestCompileExecutionWhenCheckingIsMain() throws Exception {
+		MavenProject project = projectWithCompilerPlugin();
 		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
 
 		Plugin compilerPlugin = findCompilerPlugin(project);
@@ -225,17 +227,18 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void disabledCheckingDoesNotModifyProject() {
+	void disabledCheckingDoesNotModifyProject() throws Exception {
 		NullabilityConfiguration config = NullabilityConfiguration.builder().checking(Checking.DISABLED).build();
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
-		CompilerConfigurer.configure(project, config);
+		CompilerConfigurer.configure(project, config); // Should not throw even without
+														// compiler plugin
 
 		assertThat(project.getBuild().getPlugins()).isEmpty();
 	}
 
 	@Test
-	void mergesNullAwayIntoExistingErrorProneConfig() {
+	void mergesNullAwayIntoExistingErrorProneConfig() throws Exception {
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
 
@@ -274,7 +277,7 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void doesNotAddXepDisableAllChecksWhenMergingIntoExistingErrorProne() {
+	void doesNotAddXepDisableAllChecksWhenMergingIntoExistingErrorProne() throws Exception {
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
 
@@ -302,7 +305,7 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void doesNotOverrideExistingNullAwayOptions() {
+	void doesNotOverrideExistingNullAwayOptions() throws Exception {
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
 
@@ -349,6 +352,17 @@ class CompilerConfigurerTest {
 	@Test
 	void extractOptionPrefixForXepOption() {
 		assertThat(CompilerConfigurer.extractOptionPrefix("-Xep:NullAway:ERROR")).isEqualTo("-Xep:NullAway:");
+	}
+
+	private static MavenProject projectWithCompilerPlugin() {
+		MavenProject project = new MavenProject();
+		project.setBuild(new Build());
+		Plugin compilerPlugin = new Plugin();
+		compilerPlugin.setGroupId("org.apache.maven.plugins");
+		compilerPlugin.setArtifactId("maven-compiler-plugin");
+		compilerPlugin.setVersion("3.15.0");
+		project.getBuild().addPlugin(compilerPlugin);
+		return project;
 	}
 
 	private Plugin findCompilerPlugin(MavenProject project) {

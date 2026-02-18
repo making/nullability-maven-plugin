@@ -18,6 +18,7 @@ package am.ik.maven.nullability;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.maven.MavenExecutionException;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
@@ -64,12 +65,13 @@ public final class CompilerConfigurer {
 	 * Configures the maven-compiler-plugin for the given project.
 	 * @param project the Maven project to configure
 	 * @param config the nullability configuration
+	 * @throws MavenExecutionException if maven-compiler-plugin is not declared
 	 */
-	public static void configure(MavenProject project, NullabilityConfiguration config) {
+	public static void configure(MavenProject project, NullabilityConfiguration config) throws MavenExecutionException {
 		if (!config.checking().isMainChecking()) {
 			return;
 		}
-		Plugin compilerPlugin = findOrCreateCompilerPlugin(project);
+		Plugin compilerPlugin = findCompilerPlugin(project);
 
 		// Configure at plugin level
 		Xpp3Dom pluginConfig = getOrCreateConfiguration(compilerPlugin);
@@ -172,23 +174,37 @@ public final class CompilerConfigurer {
 		return null;
 	}
 
-	private static Plugin findOrCreateCompilerPlugin(MavenProject project) {
+	private static Plugin findCompilerPlugin(MavenProject project) throws MavenExecutionException {
 		Build build = project.getBuild();
-		if (build == null) {
-			build = new Build();
-			project.setBuild(build);
-		}
-		for (Plugin plugin : build.getPlugins()) {
-			if (COMPILER_PLUGIN_ARTIFACT_ID.equals(plugin.getArtifactId())
-					&& (plugin.getGroupId() == null || COMPILER_PLUGIN_GROUP_ID.equals(plugin.getGroupId()))) {
-				return plugin;
+		if (build != null) {
+			for (Plugin plugin : build.getPlugins()) {
+				if (isCompilerPlugin(plugin)) {
+					return plugin;
+				}
+			}
+			// If not in build/plugins, check pluginManagement and create in build/plugins
+			if (build.getPluginManagement() != null) {
+				for (Plugin managedPlugin : build.getPluginManagement().getPlugins()) {
+					if (isCompilerPlugin(managedPlugin)) {
+						Plugin plugin = new Plugin();
+						plugin.setGroupId(COMPILER_PLUGIN_GROUP_ID);
+						plugin.setArtifactId(COMPILER_PLUGIN_ARTIFACT_ID);
+						build.addPlugin(plugin);
+						return plugin;
+					}
+				}
 			}
 		}
-		Plugin plugin = new Plugin();
-		plugin.setGroupId(COMPILER_PLUGIN_GROUP_ID);
-		plugin.setArtifactId(COMPILER_PLUGIN_ARTIFACT_ID);
-		build.addPlugin(plugin);
-		return plugin;
+		throw new MavenExecutionException(
+				"[nullability] maven-compiler-plugin 3.5+ must be declared in <build><plugins> or"
+						+ " <build><pluginManagement>. Maven's default lifecycle bindings use an old version"
+						+ " (e.g., 3.1) that does not support annotationProcessorPaths.",
+				project.getFile());
+	}
+
+	private static boolean isCompilerPlugin(Plugin plugin) {
+		return COMPILER_PLUGIN_ARTIFACT_ID.equals(plugin.getArtifactId())
+				&& (plugin.getGroupId() == null || COMPILER_PLUGIN_GROUP_ID.equals(plugin.getGroupId()));
 	}
 
 	private static Xpp3Dom getOrCreateConfiguration(Plugin plugin) {

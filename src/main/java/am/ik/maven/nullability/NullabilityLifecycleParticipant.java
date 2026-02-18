@@ -48,7 +48,7 @@ public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParti
 		}
 	}
 
-	private void configureProject(MavenProject project) {
+	private void configureProject(MavenProject project) throws MavenExecutionException {
 		Plugin nullabilityPlugin = findNullabilityPlugin(project);
 		if (nullabilityPlugin == null) {
 			return;
