@@ -20,7 +20,7 @@ repository.
 - No-op Mojo (`NullabilityMojo`) at `initialize` phase for plugin declaration and parameter documentation
 - Configurable checking modes: MAIN, TESTS, DISABLED
 - Support for `RequireExplicitNullMarking` check
-- Spring Contract and AssertJ ThrowingCallable custom contract annotations
+- Spring Contract and AssertJ `@Contract` custom contract annotations
 - Excludes test paths and generated sources by default
 - Preserves existing `maven-compiler-plugin` configuration
 - Integration tests via `maven-invoker-plugin`

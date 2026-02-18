@@ -116,7 +116,7 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 When `checking` is set to `tests`, the plugin adds a separate configuration for `default-testCompile` with test-specific NullAway options:
 
 - `HandleTestAssertionLibraries=true`
-- AssertJ `ThrowingCallable` as a custom contract annotation
+- AssertJ `@Contract` as a custom contract annotation (requires AssertJ 3.27.4+)
 
 ### Existing compiler configuration
 
