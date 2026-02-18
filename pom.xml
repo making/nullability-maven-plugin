@@ -6,7 +6,7 @@
 
 	<groupId>am.ik.maven</groupId>
 	<artifactId>nullability-maven-plugin</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>nullability-maven-plugin</name>
 	<description>A Maven plugin that configures ErrorProne and NullAway for nullability checking</description>
