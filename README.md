@@ -1,6 +1,6 @@
 # Nullability Maven Plugin
 
-A Maven plugin that configures [ErrorProne](https://errorprone.info/) and [NullAway](https://github.com/uber/NullAway) for nullability checking. It replaces the ~40 lines of `maven-compiler-plugin` boilerplate typically required to set up NullAway with a single plugin declaration.
+A Maven plugin that configures [ErrorProne](https://errorprone.info/) and [NullAway](https://github.com/uber/NullAway) for nullability checking, inspired by [spring-gradle-plugins/nullability-plugin](https://github.com/spring-gradle-plugins/nullability-plugin). It replaces the ~40 lines of `maven-compiler-plugin` boilerplate typically required to set up NullAway with a single plugin declaration.
 
 ## When to use this plugin
 
