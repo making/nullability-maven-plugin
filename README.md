@@ -14,9 +14,14 @@ If you are using JSpecify's `@NullMarked` / `@Nullable` annotations and want Nul
 
 ## Usage
 
-Add the plugin to your `pom.xml`:
+Add the plugin to your `pom.xml`. If you are using Maven 3.8.x, you must also declare `maven-compiler-plugin` 3.5+ (see [Requirements](#requirements)):
 
 ```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.15.0</version>
+</plugin>
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
@@ -86,7 +91,7 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <extensions>true</extensions>
     <configuration>
         <requireExplicitNullMarking>false</requireExplicitNullMarking>
@@ -132,7 +137,7 @@ For example, if you have MapStruct and a custom compiler argument:
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.14.0</version>
+    <version>3.15.0</version>
     <configuration>
         <parameters>true</parameters>
         <annotationProcessorPaths>
@@ -159,7 +164,7 @@ If you already have ErrorProne configured with your own checks (e.g., `-Xplugin:
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.14.0</version>
+    <version>3.15.0</version>
     <configuration>
         <annotationProcessorPaths>
             <path>
@@ -181,6 +186,30 @@ After the nullability plugin runs, the `-Xplugin:ErrorProne` argument will conta
 ## Requirements
 
 - **JDK 22+** (recommended)
+- **`maven-compiler-plugin` 3.5+**
+
+This plugin uses `annotationProcessorPaths` to configure ErrorProne and NullAway, which requires `maven-compiler-plugin` 3.5 or later. Maven 3.9+ includes a sufficient default version, but Maven 3.8.x defaults to 3.1 which does not support `annotationProcessorPaths`. The plugin cannot override this version at runtime.
+
+| Maven version | Default `maven-compiler-plugin` | Works without declaration?    |
+|---------------|---------------------------------|-------------------------------|
+| 3.9.x         | 3.10+                           | Yes                           |
+| 3.8.x         | 3.1                             | **No** (requires declaration) |
+
+If you are using Maven 3.8.x, a minimal declaration in `<pluginManagement>` is sufficient:
+
+```xml
+<build>
+    <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.15.0</version>
+            </plugin>
+        </plugins>
+    </pluginManagement>
+</build>
+```
 
 This plugin itself is compiled for Java 17, but the default dependencies have higher JDK requirements:
 
@@ -204,7 +233,7 @@ To use an older JDK, adjust the configuration accordingly:
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <extensions>true</extensions>
     <configuration>
         <errorProneVersion>2.42.0</errorProneVersion>
