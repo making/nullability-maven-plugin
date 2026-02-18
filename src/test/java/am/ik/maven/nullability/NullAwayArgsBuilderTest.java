@@ -44,8 +44,7 @@ class NullAwayArgsBuilderTest {
 
 	@Test
 	void mainModeWithoutRequireExplicitNullMarking() {
-		NullabilityConfiguration config = new NullabilityConfiguration("2.47.0", "0.13.1", true, false, false, true,
-				".*/target/generated-sources/.*");
+		NullabilityConfiguration config = NullabilityConfiguration.builder().requireExplicitNullMarking(false).build();
 		String result = NullAwayArgsBuilder.build(false, config);
 		assertThat(result).doesNotContain("RequireExplicitNullMarking");
 	}
@@ -59,8 +58,7 @@ class NullAwayArgsBuilderTest {
 
 	@Test
 	void mainModeWithoutSpringContractSupport() {
-		NullabilityConfiguration config = new NullabilityConfiguration("2.47.0", "0.13.1", true, false, true, false,
-				".*/target/generated-sources/.*");
+		NullabilityConfiguration config = NullabilityConfiguration.builder().springContractSupport(false).build();
 		String result = NullAwayArgsBuilder.build(false, config);
 		assertThat(result).doesNotContain("CustomContractAnnotations");
 	}
@@ -97,8 +95,7 @@ class NullAwayArgsBuilderTest {
 
 	@Test
 	void testsModeWithoutSpringContractIncludesOnlyAssertJ() {
-		NullabilityConfiguration config = new NullabilityConfiguration("2.47.0", "0.13.1", true, true, true, false,
-				".*/target/generated-sources/.*");
+		NullabilityConfiguration config = NullabilityConfiguration.builder().springContractSupport(false).build();
 		String result = NullAwayArgsBuilder.build(true, config);
 		assertThat(result).contains(
 				"-XepOpt:NullAway:CustomContractAnnotations=org.assertj.core.api.ThrowableAssert.ThrowingCallable");
@@ -129,16 +126,30 @@ class NullAwayArgsBuilderTest {
 
 	@Test
 	void buildExcludedPathsWithEmptyExcludedPaths() {
-		NullabilityConfiguration config = new NullabilityConfiguration("2.47.0", "0.13.1", true, false, true, true, "");
+		NullabilityConfiguration config = NullabilityConfiguration.builder().excludedPaths("").build();
 		String result = NullAwayArgsBuilder.buildExcludedPaths(false, config);
 		assertThat(result).isEqualTo("(.*/test/java/.*)");
 	}
 
 	@Test
 	void buildExcludedPathsForTestsModeWithEmptyExcludedPaths() {
-		NullabilityConfiguration config = new NullabilityConfiguration("2.47.0", "0.13.1", true, true, true, true, "");
+		NullabilityConfiguration config = NullabilityConfiguration.builder().excludedPaths("").build();
 		String result = NullAwayArgsBuilder.buildExcludedPaths(true, config);
 		assertThat(result).isEmpty();
+	}
+
+	@Test
+	void jspecifyModeDisabledExcludesJSpecifyOption() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder().jspecifyMode(false).build();
+		String result = NullAwayArgsBuilder.build(false, config);
+		assertThat(result).doesNotContain("JSpecifyMode");
+	}
+
+	@Test
+	void jspecifyModeDisabledExcludesJSpecifyOptionFromBuildNullAwayOptions() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder().jspecifyMode(false).build();
+		List<String> options = NullAwayArgsBuilder.buildNullAwayOptions(false, config);
+		assertThat(options).noneMatch(opt -> opt.contains("JSpecifyMode"));
 	}
 
 	@Test
@@ -172,8 +183,7 @@ class NullAwayArgsBuilderTest {
 
 	@Test
 	void buildNullAwayOptionsExcludesRequireExplicitNullMarkingWhenDisabled() {
-		NullabilityConfiguration config = new NullabilityConfiguration("2.47.0", "0.13.1", true, false, false, true,
-				".*/target/generated-sources/.*");
+		NullabilityConfiguration config = NullabilityConfiguration.builder().requireExplicitNullMarking(false).build();
 		List<String> options = NullAwayArgsBuilder.buildNullAwayOptions(false, config);
 		assertThat(options).noneMatch(opt -> opt.contains("RequireExplicitNullMarking"));
 	}

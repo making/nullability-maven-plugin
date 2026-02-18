@@ -60,7 +60,9 @@ public final class NullAwayArgsBuilder {
 		List<String> options = new ArrayList<>();
 		options.add("-XepOpt:NullAway:OnlyNullMarked=true");
 		options.add("-XepOpt:NullAway:CheckContracts=true");
-		options.add("-XepOpt:NullAway:JSpecifyMode=true");
+		if (config.jspecifyMode()) {
+			options.add("-XepOpt:NullAway:JSpecifyMode=true");
+		}
 
 		String customContracts = buildCustomContractAnnotations(forTests, config.springContractSupport());
 		if (!customContracts.isEmpty()) {

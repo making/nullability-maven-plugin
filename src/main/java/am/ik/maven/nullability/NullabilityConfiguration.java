@@ -26,10 +26,12 @@ package am.ik.maven.nullability;
  * {@code RequireExplicitNullMarking} check
  * @param springContractSupport whether to add {@code org.springframework.lang.Contract}
  * to custom contract annotations
+ * @param jspecifyMode whether to enable NullAway's JSpecify mode (requires JDK 22+)
  * @param excludedPaths regex pattern for paths to exclude from checking
  */
 public record NullabilityConfiguration(String errorProneVersion, String nullAwayVersion, boolean mainChecking,
-		boolean testChecking, boolean requireExplicitNullMarking, boolean springContractSupport, String excludedPaths) {
+		boolean testChecking, boolean requireExplicitNullMarking, boolean springContractSupport, boolean jspecifyMode,
+		String excludedPaths) {
 
 	/**
 	 * Default ErrorProne version.
@@ -51,8 +53,84 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 	 * @return a new {@link NullabilityConfiguration} with defaults
 	 */
 	public static NullabilityConfiguration defaults() {
-		return new NullabilityConfiguration(DEFAULT_ERROR_PRONE_VERSION, DEFAULT_NULLAWAY_VERSION, true, false, true,
-				true, DEFAULT_EXCLUDED_PATHS);
+		return builder().build();
+	}
+
+	/**
+	 * Creates a new builder with default values.
+	 * @return a new {@link Builder}
+	 */
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static final class Builder {
+
+		private String errorProneVersion = DEFAULT_ERROR_PRONE_VERSION;
+
+		private String nullAwayVersion = DEFAULT_NULLAWAY_VERSION;
+
+		private boolean mainChecking = true;
+
+		private boolean testChecking = false;
+
+		private boolean requireExplicitNullMarking = true;
+
+		private boolean springContractSupport = true;
+
+		private boolean jspecifyMode = true;
+
+		private String excludedPaths = DEFAULT_EXCLUDED_PATHS;
+
+		private Builder() {
+		}
+
+		public Builder errorProneVersion(String errorProneVersion) {
+			this.errorProneVersion = errorProneVersion;
+			return this;
+		}
+
+		public Builder nullAwayVersion(String nullAwayVersion) {
+			this.nullAwayVersion = nullAwayVersion;
+			return this;
+		}
+
+		public Builder mainChecking(boolean mainChecking) {
+			this.mainChecking = mainChecking;
+			return this;
+		}
+
+		public Builder testChecking(boolean testChecking) {
+			this.testChecking = testChecking;
+			return this;
+		}
+
+		public Builder requireExplicitNullMarking(boolean requireExplicitNullMarking) {
+			this.requireExplicitNullMarking = requireExplicitNullMarking;
+			return this;
+		}
+
+		public Builder springContractSupport(boolean springContractSupport) {
+			this.springContractSupport = springContractSupport;
+			return this;
+		}
+
+		public Builder jspecifyMode(boolean jspecifyMode) {
+			this.jspecifyMode = jspecifyMode;
+			return this;
+		}
+
+		public Builder excludedPaths(String excludedPaths) {
+			this.excludedPaths = excludedPaths;
+			return this;
+		}
+
+		public NullabilityConfiguration build() {
+			return new NullabilityConfiguration(this.errorProneVersion, this.nullAwayVersion, this.mainChecking,
+					this.testChecking, this.requireExplicitNullMarking, this.springContractSupport, this.jspecifyMode,
+					this.excludedPaths);
+		}
+
 	}
 
 }

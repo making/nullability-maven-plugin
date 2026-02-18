@@ -85,23 +85,27 @@ public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParti
 			return null;
 		}
 
-		String errorProneVersion = getStringValue(config, "errorProneVersion", resolveProperty(project,
-				"nullability.errorProneVersion", NullabilityConfiguration.DEFAULT_ERROR_PRONE_VERSION));
-		String nullAwayVersion = getStringValue(config, "nullAwayVersion", resolveProperty(project,
-				"nullability.nullAwayVersion", NullabilityConfiguration.DEFAULT_NULLAWAY_VERSION));
-		boolean mainChecking = getBooleanValue(config, "mainChecking",
-				resolveProperty(project, "nullability.mainChecking", "true"));
-		boolean testChecking = getBooleanValue(config, "testChecking",
-				resolveProperty(project, "nullability.testChecking", "false"));
-		boolean requireExplicitNullMarking = getBooleanValue(config, "requireExplicitNullMarking",
-				resolveProperty(project, "nullability.requireExplicitNullMarking", "true"));
-		boolean springContractSupport = getBooleanValue(config, "springContractSupport",
-				resolveProperty(project, "nullability.springContractSupport", "true"));
-		String excludedPaths = getStringValue(config, "excludedPaths",
-				resolveProperty(project, "nullability.excludedPaths", NullabilityConfiguration.DEFAULT_EXCLUDED_PATHS));
-
-		return new NullabilityConfiguration(errorProneVersion, nullAwayVersion, mainChecking, testChecking,
-				requireExplicitNullMarking, springContractSupport, excludedPaths);
+		return NullabilityConfiguration.builder()
+			.errorProneVersion(getStringValue(config, "errorProneVersion",
+					resolveProperty(project, "nullability.errorProneVersion",
+							NullabilityConfiguration.DEFAULT_ERROR_PRONE_VERSION)))
+			.nullAwayVersion(getStringValue(config, "nullAwayVersion",
+					resolveProperty(project, "nullability.nullAwayVersion",
+							NullabilityConfiguration.DEFAULT_NULLAWAY_VERSION)))
+			.mainChecking(getBooleanValue(config, "mainChecking",
+					resolveProperty(project, "nullability.mainChecking", "true")))
+			.testChecking(getBooleanValue(config, "testChecking",
+					resolveProperty(project, "nullability.testChecking", "false")))
+			.requireExplicitNullMarking(getBooleanValue(config, "requireExplicitNullMarking",
+					resolveProperty(project, "nullability.requireExplicitNullMarking", "true")))
+			.springContractSupport(getBooleanValue(config, "springContractSupport",
+					resolveProperty(project, "nullability.springContractSupport", "true")))
+			.jspecifyMode(getBooleanValue(config, "jspecifyMode",
+					resolveProperty(project, "nullability.jspecifyMode", "true")))
+			.excludedPaths(getStringValue(config, "excludedPaths",
+					resolveProperty(project, "nullability.excludedPaths",
+							NullabilityConfiguration.DEFAULT_EXCLUDED_PATHS)))
+			.build();
 	}
 
 	private String resolveProperty(MavenProject project, String propertyName, String defaultValue) {

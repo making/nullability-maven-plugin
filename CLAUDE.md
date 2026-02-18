@@ -29,7 +29,8 @@ repository.
 
 ### Prerequisites
 
-- Java 17+
+- Java 17+ (for compiling the plugin itself)
+- JDK 22+ (for running ITs, due to ErrorProne 2.43.0+ requiring JDK 21+ and NullAway JSpecify mode requiring JDK 22+)
 
 ### Code Standards
 

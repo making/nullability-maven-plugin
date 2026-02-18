@@ -185,8 +185,7 @@ class CompilerConfigurerTest {
 
 	@Test
 	void configuresTestCompileExecutionWhenTestCheckingEnabled() {
-		NullabilityConfiguration config = new NullabilityConfiguration("2.47.0", "0.13.1", true, true, true, true,
-				".*/target/generated-sources/.*");
+		NullabilityConfiguration config = NullabilityConfiguration.builder().testChecking(true).build();
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
 		CompilerConfigurer.configure(project, config);
@@ -225,8 +224,10 @@ class CompilerConfigurerTest {
 
 	@Test
 	void disabledMainAndTestDoesNotModifyProject() {
-		NullabilityConfiguration config = new NullabilityConfiguration("2.47.0", "0.13.1", false, false, true, true,
-				"");
+		NullabilityConfiguration config = NullabilityConfiguration.builder()
+			.mainChecking(false)
+			.testChecking(false)
+			.build();
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
 		CompilerConfigurer.configure(project, config);

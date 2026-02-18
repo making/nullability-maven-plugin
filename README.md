@@ -77,6 +77,7 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 | `testChecking` | `nullability.testChecking` | `false` | Enable nullability checking for test sources |
 | `requireExplicitNullMarking` | `nullability.requireExplicitNullMarking` | `true` | Enable `RequireExplicitNullMarking` check |
 | `springContractSupport` | `nullability.springContractSupport` | `true` | Add `org.springframework.lang.Contract` to custom contract annotations |
+| `jspecifyMode` | `nullability.jspecifyMode` | `true` | Enable NullAway's JSpecify mode (requires JDK 22+) |
 | `excludedPaths` | `nullability.excludedPaths` | `.*/target/generated-sources/.*` | Regex pattern for paths to exclude |
 | `skip` | `nullability.skip` | `false` | Skip the plugin |
 
@@ -180,8 +181,57 @@ After the nullability plugin runs, the `-Xplugin:ErrorProne` argument will conta
 
 ## Requirements
 
-- Java 17+
+- **JDK 22+** (recommended)
 - Maven 3.8.6+
+
+This plugin itself is compiled for Java 17, but the default dependencies have higher JDK requirements:
+
+- **ErrorProne 2.43.0+** (default: 2.47.0) requires JDK 21+ to run. ErrorProne 2.42.0 was the last version to support JDK 17.
+- **NullAway's JSpecify mode** (`JSpecifyMode=true`, enabled by default) requires JDK 22+, or JDK 21 with the additional flag `-XDaddTypeAnnotationsToSymbol=true` (OpenJDK-based distributions such as Temurin or Zulu; Oracle JDK 21 does not support this flag). See the [NullAway JSpecify Support](https://github.com/uber/NullAway/wiki/JSpecify-Support#supported-jdk-versions) documentation for details.
+
+These are constraints imposed by ErrorProne and NullAway, not by this plugin. You can use `--release 17` (or lower) to target older Java versions while building with JDK 22+.
+
+The following table summarizes the minimum JDK version required to **run the build** for each configuration combination:
+
+| ErrorProne version | JSpecifyMode | Minimum JDK |
+|---|---|---|
+| 2.43.0+ (default: 2.47.0) | `true` (default) | **JDK 22+** |
+| 2.42.0 | `true` | JDK 22+ |
+| 2.43.0+ (default: 2.47.0) | `false` | JDK 21+ |
+| 2.42.0 | `false` | JDK 17+ |
+
+To use an older JDK, adjust the configuration accordingly:
+
+```xml
+<plugin>
+    <groupId>am.ik.maven</groupId>
+    <artifactId>nullability-maven-plugin</artifactId>
+    <version>0.1.0</version>
+    <extensions>true</extensions>
+    <configuration>
+        <errorProneVersion>2.42.0</errorProneVersion>
+        <jspecifyMode>false</jspecifyMode>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>configure</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+Or equivalently, using Maven properties:
+
+```xml
+<properties>
+    <nullability.errorProneVersion>2.42.0</nullability.errorProneVersion>
+    <nullability.jspecifyMode>false</nullability.jspecifyMode>
+</properties>
+```
+
+Note that disabling JSpecify mode loses some of NullAway's advanced nullability checking capabilities. See the [NullAway JSpecify Support](https://github.com/uber/NullAway/wiki/JSpecify-Support) documentation for details on what JSpecify mode provides.
 
 ## License
 

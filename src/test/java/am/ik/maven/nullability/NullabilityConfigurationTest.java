@@ -30,19 +30,28 @@ class NullabilityConfigurationTest {
 		assertThat(config.testChecking()).isFalse();
 		assertThat(config.requireExplicitNullMarking()).isTrue();
 		assertThat(config.springContractSupport()).isTrue();
+		assertThat(config.jspecifyMode()).isTrue();
 		assertThat(config.excludedPaths()).isEqualTo(".*/target/generated-sources/.*");
 	}
 
 	@Test
 	void customValuesArePreserved() {
-		NullabilityConfiguration config = new NullabilityConfiguration("2.46.0", "0.12.0", true, true, false, false,
-				".*/generated/.*");
+		NullabilityConfiguration config = NullabilityConfiguration.builder()
+			.errorProneVersion("2.46.0")
+			.nullAwayVersion("0.12.0")
+			.testChecking(true)
+			.requireExplicitNullMarking(false)
+			.springContractSupport(false)
+			.jspecifyMode(false)
+			.excludedPaths(".*/generated/.*")
+			.build();
 		assertThat(config.errorProneVersion()).isEqualTo("2.46.0");
 		assertThat(config.nullAwayVersion()).isEqualTo("0.12.0");
 		assertThat(config.mainChecking()).isTrue();
 		assertThat(config.testChecking()).isTrue();
 		assertThat(config.requireExplicitNullMarking()).isFalse();
 		assertThat(config.springContractSupport()).isFalse();
+		assertThat(config.jspecifyMode()).isFalse();
 		assertThat(config.excludedPaths()).isEqualTo(".*/generated/.*");
 	}
 

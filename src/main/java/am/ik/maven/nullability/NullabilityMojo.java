@@ -68,6 +68,16 @@ public class NullabilityMojo extends AbstractMojo {
 	private boolean springContractSupport;
 
 	/**
+	 * Whether to enable NullAway's JSpecify mode. When enabled, NullAway uses JSpecify
+	 * semantics for nullability checking. Requires JDK 22+, or JDK 21 with the
+	 * {@code -XDaddTypeAnnotationsToSymbol=true} flag (OpenJDK-based distributions only).
+	 * Disabling this allows running on older JDKs at the cost of reduced checking
+	 * capabilities.
+	 */
+	@Parameter(property = "nullability.jspecifyMode", defaultValue = "true")
+	private boolean jspecifyMode;
+
+	/**
 	 * Regex pattern for paths to exclude from checking.
 	 */
 	@Parameter(property = "nullability.excludedPaths", defaultValue = NullabilityConfiguration.DEFAULT_EXCLUDED_PATHS)
