@@ -20,7 +20,7 @@ Add the plugin to your `pom.xml`:
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <extensions>true</extensions>
     <executions>
         <execution>
