@@ -55,7 +55,7 @@ jobs:
         distribution: 'liberica'
         cache: maven
     - name: Unit Tests
-      run: ./mvnw -V --no-transfer-progress clean test
+      run: ./mvnw -V --no-transfer-progress clean test verify
     - name: Generates Maven Settings
       if: github.event_name != 'pull_request'
       uses: s4u/maven-settings-action@v4.0.0
