@@ -31,15 +31,13 @@ public class NullabilityMojo extends AbstractMojo {
 	/**
 	 * The ErrorProne version to use.
 	 */
-	@Parameter(property = "nullability.errorProneVersion",
-			defaultValue = NullabilityConfiguration.DEFAULT_ERROR_PRONE_VERSION)
+	@Parameter(property = "nullability.errorProneVersion")
 	private String errorProneVersion;
 
 	/**
 	 * The NullAway version to use.
 	 */
-	@Parameter(property = "nullability.nullAwayVersion",
-			defaultValue = NullabilityConfiguration.DEFAULT_NULLAWAY_VERSION)
+	@Parameter(property = "nullability.nullAwayVersion")
 	private String nullAwayVersion;
 
 	/**

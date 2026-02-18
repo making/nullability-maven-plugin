@@ -71,8 +71,8 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 
 | Parameter                    | Property                                 | Default                          | Description                                                            |
 |------------------------------|------------------------------------------|----------------------------------|------------------------------------------------------------------------|
-| `errorProneVersion`          | `nullability.errorProneVersion`          | `2.47.0`                         | ErrorProne version                                                     |
-| `nullAwayVersion`            | `nullability.nullAwayVersion`            | `0.13.1`                         | NullAway version                                                       |
+| `errorProneVersion`          | `nullability.errorProneVersion`          | (managed)                        | ErrorProne version                                                     |
+| `nullAwayVersion`            | `nullability.nullAwayVersion`            | (managed)                        | NullAway version                                                       |
 | `mainChecking`               | `nullability.mainChecking`               | `true`                           | Enable nullability checking for main sources                           |
 | `testChecking`               | `nullability.testChecking`               | `false`                          | Enable nullability checking for test sources                           |
 | `requireExplicitNullMarking` | `nullability.requireExplicitNullMarking` | `true`                           | Enable `RequireExplicitNullMarking` check                              |
@@ -186,19 +186,19 @@ After the nullability plugin runs, the `-Xplugin:ErrorProne` argument will conta
 
 This plugin itself is compiled for Java 17, but the default dependencies have higher JDK requirements:
 
-- **ErrorProne 2.43.0+** (default: 2.47.0) requires JDK 21+ to run. ErrorProne 2.42.0 was the last version to support JDK 17.
+- **ErrorProne 2.43.0+** requires JDK 21+ to run. ErrorProne 2.42.0 was the last version to support JDK 17.
 - **NullAway's JSpecify mode** (`JSpecifyMode=true`, enabled by default) requires JDK 22+, or JDK 21 with the additional flag `-XDaddTypeAnnotationsToSymbol=true` (OpenJDK-based distributions such as Temurin or Zulu; Oracle JDK 21 does not support this flag). See the [NullAway JSpecify Support](https://github.com/uber/NullAway/wiki/JSpecify-Support#supported-jdk-versions) documentation for details.
 
 These are constraints imposed by ErrorProne and NullAway, not by this plugin. You can use `--release 17` (or lower) to target older Java versions while building with JDK 22+.
 
 The following table summarizes the minimum JDK version required to **run the build** for each configuration combination:
 
-| ErrorProne version        | JSpecifyMode     | Minimum JDK |
-|---------------------------|------------------|-------------|
-| 2.43.0+ (default: 2.47.0) | `true` (default) | **JDK 22+** |
-| 2.42.0                    | `true`           | JDK 22+     |
-| 2.43.0+ (default: 2.47.0) | `false`          | JDK 21+     |
-| 2.42.0                    | `false`          | JDK 17+     |
+| ErrorProne version | JSpecifyMode     | Minimum JDK |
+|--------------------|------------------|-------------|
+| 2.43.0+            | `true` (default) | **JDK 22+** |
+| 2.42.0             | `true`           | JDK 22+     |
+| 2.43.0+            | `false`          | JDK 21+     |
+| 2.42.0             | `false`          | JDK 17+     |
 
 To use an older JDK, adjust the configuration accordingly:
 

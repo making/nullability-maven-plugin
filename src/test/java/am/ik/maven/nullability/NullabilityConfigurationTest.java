@@ -24,8 +24,8 @@ class NullabilityConfigurationTest {
 	@Test
 	void defaultsHaveExpectedValues() {
 		NullabilityConfiguration config = NullabilityConfiguration.defaults();
-		assertThat(config.errorProneVersion()).isEqualTo("2.47.0");
-		assertThat(config.nullAwayVersion()).isEqualTo("0.13.1");
+		assertThat(config.errorProneVersion()).isEqualTo(NullabilityConfiguration.DEFAULT_ERROR_PRONE_VERSION);
+		assertThat(config.nullAwayVersion()).isEqualTo(NullabilityConfiguration.DEFAULT_NULLAWAY_VERSION);
 		assertThat(config.mainChecking()).isTrue();
 		assertThat(config.testChecking()).isFalse();
 		assertThat(config.requireExplicitNullMarking()).isTrue();

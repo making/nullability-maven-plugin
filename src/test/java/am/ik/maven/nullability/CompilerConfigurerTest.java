@@ -63,12 +63,14 @@ class CompilerConfigurerTest {
 		Xpp3Dom errorProne = paths.getChildren("path")[0];
 		assertThat(errorProne.getChild("groupId").getValue()).isEqualTo("com.google.errorprone");
 		assertThat(errorProne.getChild("artifactId").getValue()).isEqualTo("error_prone_core");
-		assertThat(errorProne.getChild("version").getValue()).isEqualTo("2.47.0");
+		assertThat(errorProne.getChild("version").getValue())
+			.isEqualTo(NullabilityConfiguration.DEFAULT_ERROR_PRONE_VERSION);
 
 		Xpp3Dom nullAway = paths.getChildren("path")[1];
 		assertThat(nullAway.getChild("groupId").getValue()).isEqualTo("com.uber.nullaway");
 		assertThat(nullAway.getChild("artifactId").getValue()).isEqualTo("nullaway");
-		assertThat(nullAway.getChild("version").getValue()).isEqualTo("0.13.1");
+		assertThat(nullAway.getChild("version").getValue())
+			.isEqualTo(NullabilityConfiguration.DEFAULT_NULLAWAY_VERSION);
 	}
 
 	@Test

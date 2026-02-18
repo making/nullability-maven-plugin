@@ -15,6 +15,11 @@
  */
 package am.ik.maven.nullability;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.util.Properties;
+
 /**
  * Holds the resolved configuration for the nullability plugin.
  *
@@ -33,15 +38,32 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 		boolean testChecking, boolean requireExplicitNullMarking, boolean springContractSupport, boolean jspecifyMode,
 		String excludedPaths) {
 
+	private static final Properties DEFAULTS = loadDefaults();
+
+	private static Properties loadDefaults() {
+		Properties props = new Properties();
+		try (InputStream is = NullabilityConfiguration.class.getResourceAsStream("defaults.properties")) {
+			if (is == null) {
+				throw new IllegalStateException(
+						"defaults.properties not found. Run 'mvn process-resources' to generate it.");
+			}
+			props.load(is);
+		}
+		catch (IOException ex) {
+			throw new UncheckedIOException("Failed to load defaults.properties", ex);
+		}
+		return props;
+	}
+
 	/**
 	 * Default ErrorProne version.
 	 */
-	public static final String DEFAULT_ERROR_PRONE_VERSION = "2.47.0";
+	public static final String DEFAULT_ERROR_PRONE_VERSION = DEFAULTS.getProperty("errorprone.version");
 
 	/**
 	 * Default NullAway version.
 	 */
-	public static final String DEFAULT_NULLAWAY_VERSION = "0.13.1";
+	public static final String DEFAULT_NULLAWAY_VERSION = DEFAULTS.getProperty("nullaway.version");
 
 	/**
 	 * Default excluded paths pattern (generated sources).

@@ -19,6 +19,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.version>3.8.6</maven.version>
 		<spring-boot.version>4.0.2</spring-boot.version>
+		<errorprone.version>2.47.0</errorprone.version>
+		<nullaway.version>0.13.1</nullaway.version>
 	</properties>
 	<licenses>
 		<license>
@@ -63,6 +65,18 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.google.errorprone</groupId>
+			<artifactId>error_prone_core</artifactId>
+			<version>${errorprone.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.uber.nullaway</groupId>
+			<artifactId>nullaway</artifactId>
+			<version>${nullaway.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
@@ -80,6 +94,22 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>am/ik/maven/nullability/defaults.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>am/ik/maven/nullability/defaults.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
