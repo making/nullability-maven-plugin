@@ -66,7 +66,7 @@ public final class CompilerConfigurer {
 	 * @param config the nullability configuration
 	 */
 	public static void configure(MavenProject project, NullabilityConfiguration config) {
-		if (!config.mainChecking() && !config.testChecking()) {
+		if (!config.checking().isMainChecking()) {
 			return;
 		}
 		Plugin compilerPlugin = findOrCreateCompilerPlugin(project);
@@ -80,7 +80,7 @@ public final class CompilerConfigurer {
 		// the changes (MojoExecutionConfigurator reads execution-level config first)
 		configureDefaultCompileExecution(compilerPlugin, config);
 
-		if (config.testChecking()) {
+		if (config.checking().isTestChecking()) {
 			configureTestCompileExecution(compilerPlugin, config);
 		}
 	}

@@ -187,7 +187,7 @@ class CompilerConfigurerTest {
 
 	@Test
 	void configuresTestCompileExecutionWhenTestCheckingEnabled() {
-		NullabilityConfiguration config = NullabilityConfiguration.builder().testChecking(true).build();
+		NullabilityConfiguration config = NullabilityConfiguration.builder().checking(Checking.TESTS).build();
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
 		CompilerConfigurer.configure(project, config);
@@ -212,7 +212,7 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void noTestCompileExecutionWhenTestCheckingDisabled() {
+	void noTestCompileExecutionWhenCheckingIsMain() {
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
 		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
@@ -225,11 +225,8 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
-	void disabledMainAndTestDoesNotModifyProject() {
-		NullabilityConfiguration config = NullabilityConfiguration.builder()
-			.mainChecking(false)
-			.testChecking(false)
-			.build();
+	void disabledCheckingDoesNotModifyProject() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder().checking(Checking.DISABLED).build();
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());
 		CompilerConfigurer.configure(project, config);

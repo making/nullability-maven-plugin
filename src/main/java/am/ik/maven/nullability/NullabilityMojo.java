@@ -41,16 +41,10 @@ public class NullabilityMojo extends AbstractMojo {
 	private String nullAwayVersion;
 
 	/**
-	 * Whether nullability checking is enabled for main sources.
+	 * Checking mode: {@code main} (default), {@code tests}, or {@code disabled}.
 	 */
-	@Parameter(property = "nullability.mainChecking", defaultValue = "true")
-	private boolean mainChecking;
-
-	/**
-	 * Whether nullability checking is enabled for test sources.
-	 */
-	@Parameter(property = "nullability.testChecking", defaultValue = "false")
-	private boolean testChecking;
+	@Parameter(property = "nullability.checking", defaultValue = "main")
+	private String checking;
 
 	/**
 	 * Whether to enable the {@code RequireExplicitNullMarking} check.

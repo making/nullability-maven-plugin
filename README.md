@@ -73,8 +73,7 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 |------------------------------|------------------------------------------|----------------------------------|------------------------------------------------------------------------|
 | `errorProneVersion`          | `nullability.errorProneVersion`          | (managed)                        | ErrorProne version                                                     |
 | `nullAwayVersion`            | `nullability.nullAwayVersion`            | (managed)                        | NullAway version                                                       |
-| `mainChecking`               | `nullability.mainChecking`               | `true`                           | Enable nullability checking for main sources                           |
-| `testChecking`               | `nullability.testChecking`               | `false`                          | Enable nullability checking for test sources                           |
+| `checking`                   | `nullability.checking`                   | `main`                           | Checking mode: `main`, `tests`, or `disabled`                          |
 | `requireExplicitNullMarking` | `nullability.requireExplicitNullMarking` | `true`                           | Enable `RequireExplicitNullMarking` check                              |
 | `springContractSupport`      | `nullability.springContractSupport`      | `true`                           | Add `org.springframework.lang.Contract` to custom contract annotations |
 | `jspecifyMode`               | `nullability.jspecifyMode`               | `true`                           | Enable NullAway's JSpecify mode (requires JDK 22+)                     |
@@ -91,7 +90,7 @@ All configuration parameters can be set either in the plugin `<configuration>` b
     <extensions>true</extensions>
     <configuration>
         <requireExplicitNullMarking>false</requireExplicitNullMarking>
-        <testChecking>true</testChecking>
+        <checking>tests</checking>
     </configuration>
     <executions>
         <execution>
@@ -108,13 +107,13 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 ```xml
 <properties>
     <nullability.requireExplicitNullMarking>false</nullability.requireExplicitNullMarking>
-    <nullability.testChecking>true</nullability.testChecking>
+    <nullability.checking>tests</nullability.checking>
 </properties>
 ```
 
 ### Test checking
 
-When `testChecking` is enabled, the plugin adds a separate configuration for `default-testCompile` with test-specific NullAway options:
+When `checking` is set to `tests`, the plugin adds a separate configuration for `default-testCompile` with test-specific NullAway options:
 
 - `HandleTestAssertionLibraries=true`
 - AssertJ `ThrowingCallable` as a custom contract annotation

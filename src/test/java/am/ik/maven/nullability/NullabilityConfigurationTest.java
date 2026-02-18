@@ -26,8 +26,7 @@ class NullabilityConfigurationTest {
 		NullabilityConfiguration config = NullabilityConfiguration.defaults();
 		assertThat(config.errorProneVersion()).isEqualTo(NullabilityConfiguration.DEFAULT_ERROR_PRONE_VERSION);
 		assertThat(config.nullAwayVersion()).isEqualTo(NullabilityConfiguration.DEFAULT_NULLAWAY_VERSION);
-		assertThat(config.mainChecking()).isTrue();
-		assertThat(config.testChecking()).isFalse();
+		assertThat(config.checking()).isEqualTo(Checking.MAIN);
 		assertThat(config.requireExplicitNullMarking()).isTrue();
 		assertThat(config.springContractSupport()).isTrue();
 		assertThat(config.jspecifyMode()).isTrue();
@@ -39,7 +38,7 @@ class NullabilityConfigurationTest {
 		NullabilityConfiguration config = NullabilityConfiguration.builder()
 			.errorProneVersion("2.46.0")
 			.nullAwayVersion("0.12.0")
-			.testChecking(true)
+			.checking(Checking.TESTS)
 			.requireExplicitNullMarking(false)
 			.springContractSupport(false)
 			.jspecifyMode(false)
@@ -47,8 +46,7 @@ class NullabilityConfigurationTest {
 			.build();
 		assertThat(config.errorProneVersion()).isEqualTo("2.46.0");
 		assertThat(config.nullAwayVersion()).isEqualTo("0.12.0");
-		assertThat(config.mainChecking()).isTrue();
-		assertThat(config.testChecking()).isTrue();
+		assertThat(config.checking()).isEqualTo(Checking.TESTS);
 		assertThat(config.requireExplicitNullMarking()).isFalse();
 		assertThat(config.springContractSupport()).isFalse();
 		assertThat(config.jspecifyMode()).isFalse();

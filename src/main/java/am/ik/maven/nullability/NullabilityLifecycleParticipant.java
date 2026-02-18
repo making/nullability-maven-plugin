@@ -15,6 +15,8 @@
  */
 package am.ik.maven.nullability;
 
+import java.util.Locale;
+
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
@@ -59,8 +61,8 @@ public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParti
 		}
 
 		this.logger.info("[nullability] Configuring ErrorProne " + config.errorProneVersion() + " and NullAway "
-				+ config.nullAwayVersion() + " for " + project.getArtifactId() + " (mainChecking="
-				+ config.mainChecking() + ", testChecking=" + config.testChecking() + ")");
+				+ config.nullAwayVersion() + " for " + project.getArtifactId() + " (checking=" + config.checking()
+				+ ")");
 
 		CompilerConfigurer.configure(project, config);
 	}
@@ -92,10 +94,9 @@ public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParti
 			.nullAwayVersion(getStringValue(config, "nullAwayVersion",
 					resolveProperty(project, "nullability.nullAwayVersion",
 							NullabilityConfiguration.DEFAULT_NULLAWAY_VERSION)))
-			.mainChecking(getBooleanValue(config, "mainChecking",
-					resolveProperty(project, "nullability.mainChecking", "true")))
-			.testChecking(getBooleanValue(config, "testChecking",
-					resolveProperty(project, "nullability.testChecking", "false")))
+			.checking(Checking
+				.valueOf(getStringValue(config, "checking", resolveProperty(project, "nullability.checking", "main"))
+					.toUpperCase(Locale.ROOT)))
 			.requireExplicitNullMarking(getBooleanValue(config, "requireExplicitNullMarking",
 					resolveProperty(project, "nullability.requireExplicitNullMarking", "true")))
 			.springContractSupport(getBooleanValue(config, "springContractSupport",

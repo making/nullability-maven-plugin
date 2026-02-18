@@ -25,8 +25,8 @@ import java.util.Properties;
  *
  * @param errorProneVersion the ErrorProne version to use
  * @param nullAwayVersion the NullAway version to use
- * @param mainChecking whether nullability checking is enabled for main sources
- * @param testChecking whether nullability checking is enabled for test sources
+ * @param checking the checking mode ({@link Checking#MAIN}, {@link Checking#TESTS}, or
+ * {@link Checking#DISABLED})
  * @param requireExplicitNullMarking whether to enable the
  * {@code RequireExplicitNullMarking} check
  * @param springContractSupport whether to add {@code org.springframework.lang.Contract}
@@ -34,9 +34,8 @@ import java.util.Properties;
  * @param jspecifyMode whether to enable NullAway's JSpecify mode (requires JDK 22+)
  * @param excludedPaths regex pattern for paths to exclude from checking
  */
-public record NullabilityConfiguration(String errorProneVersion, String nullAwayVersion, boolean mainChecking,
-		boolean testChecking, boolean requireExplicitNullMarking, boolean springContractSupport, boolean jspecifyMode,
-		String excludedPaths) {
+public record NullabilityConfiguration(String errorProneVersion, String nullAwayVersion, Checking checking,
+		boolean requireExplicitNullMarking, boolean springContractSupport, boolean jspecifyMode, String excludedPaths) {
 
 	private static final Properties DEFAULTS = loadDefaults();
 
@@ -92,9 +91,7 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 
 		private String nullAwayVersion = DEFAULT_NULLAWAY_VERSION;
 
-		private boolean mainChecking = true;
-
-		private boolean testChecking = false;
+		private Checking checking = Checking.MAIN;
 
 		private boolean requireExplicitNullMarking = true;
 
@@ -117,13 +114,8 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 			return this;
 		}
 
-		public Builder mainChecking(boolean mainChecking) {
-			this.mainChecking = mainChecking;
-			return this;
-		}
-
-		public Builder testChecking(boolean testChecking) {
-			this.testChecking = testChecking;
+		public Builder checking(Checking checking) {
+			this.checking = checking;
 			return this;
 		}
 
@@ -148,9 +140,8 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 		}
 
 		public NullabilityConfiguration build() {
-			return new NullabilityConfiguration(this.errorProneVersion, this.nullAwayVersion, this.mainChecking,
-					this.testChecking, this.requireExplicitNullMarking, this.springContractSupport, this.jspecifyMode,
-					this.excludedPaths);
+			return new NullabilityConfiguration(this.errorProneVersion, this.nullAwayVersion, this.checking,
+					this.requireExplicitNullMarking, this.springContractSupport, this.jspecifyMode, this.excludedPaths);
 		}
 
 	}
