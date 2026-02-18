@@ -186,7 +186,6 @@ After the nullability plugin runs, the `-Xplugin:ErrorProne` argument will conta
 ## Requirements
 
 - **JDK 22+** (recommended)
-- **Maven 3.8.6+**
 - **`maven-compiler-plugin` 3.5+**
 
 This plugin uses `annotationProcessorPaths` to configure ErrorProne and NullAway, which requires `maven-compiler-plugin` 3.5 or later. Maven 3.9+ includes a sufficient default version, but Maven 3.8.x defaults to 3.1 which does not support `annotationProcessorPaths`. The plugin cannot override this version at runtime.
