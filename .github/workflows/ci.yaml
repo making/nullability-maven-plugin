@@ -38,20 +38,20 @@ jobs:
           kv/data/cicd/maven_central password | MAVEN_CENTRAL_PASSWORD ;
           kv/data/cicd/gpg secring | GPG_SECRING ;
           kv/data/cicd/gpg passphrase | GPG_PASSPHRASE ;
-    - name: Set up JDK 17
+    - name: Set up JDK 25
       if: github.event_name != 'pull_request'
       uses: actions/setup-java@v5
       with:
-        java-version: '17'
+        java-version: '25'
         distribution: 'liberica'
         cache: maven
         gpg-private-key: ${{ steps.secrets.outputs.GPG_SECRING }}
         gpg-passphrase: ${{ steps.secrets.outputs.GPG_PASSPHRASE }}
-    - name: Set up JDK 17 (PR)
+    - name: Set up JDK 25 (PR)
       if: github.event_name == 'pull_request'
       uses: actions/setup-java@v5
       with:
-        java-version: '17'
+        java-version: '25'
         distribution: 'liberica'
         cache: maven
     - name: Unit Tests
