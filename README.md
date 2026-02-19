@@ -25,7 +25,7 @@ Add the plugin to your `pom.xml`. If you are using Maven 3.8.x, you must also de
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.1.2</version>
+    <version>0.2.0/version>
     <extensions>true</extensions>
     <executions>
         <execution>
@@ -78,7 +78,7 @@ When `requireExplicitNullMarking` is enabled (the default), every package must h
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.1.2</version>
+    <version>0.2.0/version>
     <extensions>true</extensions>
     <executions>
         <execution>
@@ -128,7 +128,7 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.1.2</version>
+    <version>0.2.0/version>
     <extensions>true</extensions>
     <configuration>
         <requireExplicitNullMarking>false</requireExplicitNullMarking>
@@ -270,7 +270,7 @@ To use an older JDK, adjust the configuration accordingly:
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.1.2</version>
+    <version>0.2.0/version>
     <extensions>true</extensions>
     <configuration>
         <errorProneVersion>2.42.0</errorProneVersion>
