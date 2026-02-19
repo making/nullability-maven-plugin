@@ -17,7 +17,7 @@ repository.
 
 - Automatic configuration of ErrorProne and NullAway for nullability checking
 - Lifecycle participant (`NullabilityLifecycleParticipant`) injects compiler configuration before build plan is computed
-- No-op Mojo (`NullabilityMojo`) at `initialize` phase for plugin declaration and parameter documentation
+- No-op Mojo (`ConfigureMojo`) at `initialize` phase for plugin declaration and parameter documentation
 - Configurable checking modes: MAIN, TESTS, DISABLED
 - Support for `RequireExplicitNullMarking` check
 - Spring Contract and AssertJ `@Contract` custom contract annotations
@@ -59,7 +59,7 @@ repository.
 ### After Task completion
 
 - Ensure all code is formatted using `./mvnw spring-javaformat:apply`
-- Run full test suite with `./mvnw test`
+- Run full test suite with `./mvnw verify`
 - For every task, notify that the task is complete and ready for review by the following command:
 
 ```

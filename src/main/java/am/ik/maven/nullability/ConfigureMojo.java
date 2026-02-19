@@ -26,7 +26,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * the lifecycle execution plan is computed.
  */
 @Mojo(name = "configure", defaultPhase = LifecyclePhase.INITIALIZE, threadSafe = true)
-public class NullabilityMojo extends AbstractMojo {
+public class ConfigureMojo extends AbstractMojo {
 
 	/**
 	 * The ErrorProne version to use.
