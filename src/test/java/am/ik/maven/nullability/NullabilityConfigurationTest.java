@@ -28,7 +28,7 @@ class NullabilityConfigurationTest {
 		assertThat(config.nullAwayVersion()).isEqualTo(NullabilityConfiguration.DEFAULT_NULLAWAY_VERSION);
 		assertThat(config.checking()).isEqualTo(Checking.MAIN);
 		assertThat(config.requireExplicitNullMarking()).isTrue();
-		assertThat(config.springContractSupport()).isTrue();
+		assertThat(config.customContractAnnotations()).isEmpty();
 		assertThat(config.jspecifyMode()).isTrue();
 		assertThat(config.excludedPaths()).isEqualTo(".*/target/generated-sources/.*");
 	}
@@ -40,7 +40,7 @@ class NullabilityConfigurationTest {
 			.nullAwayVersion("0.12.0")
 			.checking(Checking.TESTS)
 			.requireExplicitNullMarking(false)
-			.springContractSupport(false)
+			.customContractAnnotations("com.example.MyContract")
 			.jspecifyMode(false)
 			.excludedPaths(".*/generated/.*")
 			.build();
@@ -48,7 +48,7 @@ class NullabilityConfigurationTest {
 		assertThat(config.nullAwayVersion()).isEqualTo("0.12.0");
 		assertThat(config.checking()).isEqualTo(Checking.TESTS);
 		assertThat(config.requireExplicitNullMarking()).isFalse();
-		assertThat(config.springContractSupport()).isFalse();
+		assertThat(config.customContractAnnotations()).isEqualTo("com.example.MyContract");
 		assertThat(config.jspecifyMode()).isFalse();
 		assertThat(config.excludedPaths()).isEqualTo(".*/generated/.*");
 	}

@@ -102,8 +102,8 @@ public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParti
 					.toUpperCase(Locale.ROOT)))
 			.requireExplicitNullMarking(getBooleanValue(config, "requireExplicitNullMarking",
 					resolveProperty(project, "nullability.requireExplicitNullMarking", "true")))
-			.springContractSupport(getBooleanValue(config, "springContractSupport",
-					resolveProperty(project, "nullability.springContractSupport", "true")))
+			.customContractAnnotations(getStringValue(config, "customContractAnnotations",
+					resolveProperty(project, "nullability.customContractAnnotations", "")))
 			.jspecifyMode(getBooleanValue(config, "jspecifyMode",
 					resolveProperty(project, "nullability.jspecifyMode", "true")))
 			.excludedPaths(getStringValue(config, "excludedPaths",

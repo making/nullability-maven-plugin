@@ -17,16 +17,11 @@ package am.ik.maven.nullability;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
 /**
  * Builds the {@code -Xplugin:ErrorProne} argument string for main or test compilation.
  */
 public final class NullAwayArgsBuilder {
-
-	private static final String SPRING_CONTRACT = "org.springframework.lang.Contract";
-
-	private static final String ASSERTJ_CONTRACT = "org.assertj.core.internal.annotation.Contract";
 
 	private NullAwayArgsBuilder() {
 	}
@@ -64,9 +59,8 @@ public final class NullAwayArgsBuilder {
 			options.add("-XepOpt:NullAway:JSpecifyMode=true");
 		}
 
-		String customContracts = buildCustomContractAnnotations(forTests, config.springContractSupport());
-		if (!customContracts.isEmpty()) {
-			options.add("-XepOpt:NullAway:CustomContractAnnotations=" + customContracts);
+		if (config.customContractAnnotations() != null && !config.customContractAnnotations().isEmpty()) {
+			options.add("-XepOpt:NullAway:CustomContractAnnotations=" + config.customContractAnnotations());
 		}
 
 		if (forTests) {
@@ -99,17 +93,6 @@ public final class NullAwayArgsBuilder {
 			return "";
 		}
 		return "(" + String.join("|", patterns) + ")";
-	}
-
-	private static String buildCustomContractAnnotations(boolean forTests, boolean springContractSupport) {
-		StringJoiner joiner = new StringJoiner(",");
-		if (springContractSupport) {
-			joiner.add(SPRING_CONTRACT);
-		}
-		if (forTests) {
-			joiner.add(ASSERTJ_CONTRACT);
-		}
-		return joiner.toString();
 	}
 
 }
