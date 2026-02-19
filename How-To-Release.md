@@ -4,9 +4,16 @@ git checkout main
 git merge develop
 ./set-release-version.sh
 
+# Update README
+git add README.md
+git commit -m "Update README"
+
+# Push main and wait for deployment
+git push origin main
+# Wait for GitHub Actions deployment to complete
+
 # Create a tag and push it
 VERSION=$(./get-release-version.sh)
-git push origin main
 git tag ${VERSION}
 git push origin ${VERSION}
 
@@ -15,8 +22,5 @@ git push origin ${VERSION}
 ./set-next-patch-version.sh
 # or
 ./set-next-minor-version.sh
-# Update REAMD
-git add README.md
-git commit -m "Update README"
 git push origin develop
 ```
