@@ -95,6 +95,8 @@ The goal scans your source directories and generates `@NullMarked` annotated `pa
 
 If `checking` is set to `tests`, test source directories are also processed and generated files are placed in `target/generated-test-sources/nullability`.
 
+Existing `package-info.java` files are never overwritten. The goal is idempotent: running it multiple times produces the same result.
+
 You can also generate `package-info.java` files directly in your source tree by configuring the output directories:
 
 ```xml
@@ -105,7 +107,7 @@ You can also generate `package-info.java` files directly in your source tree by 
 </configuration>
 ```
 
-Existing `package-info.java` files are never overwritten. The goal is idempotent: running it multiple times produces the same result.
+See [`generate-package-info` goal configuration](#generate-package-info-goal-configuration) for all available parameters.
 
 ## Configuration
 
@@ -121,6 +123,17 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 | `jspecifyMode`               | `nullability.jspecifyMode`               | `true`                           | Enable NullAway's JSpecify mode (requires JDK 22+)                     |
 | `excludedPaths`              | `nullability.excludedPaths`              | `.*/target/generated-sources/.*` | Regex pattern for paths to exclude                                     |
 | `skip`                       | `nullability.skip`                       | `false`                          | Skip the plugin                                                        |
+
+### `generate-package-info` goal configuration
+
+The `generate-package-info` goal accepts the following additional parameters:
+
+| Parameter             | Property                                              | Default                                                         | Description                                             |
+|-----------------------|-------------------------------------------------------|-----------------------------------------------------------------|---------------------------------------------------------|
+| `outputDirectory`     | `nullability.generatePackageInfo.outputDirectory`     | `${project.build.directory}/generated-sources/nullability`      | Output directory for generated main `package-info.java` |
+| `testOutputDirectory` | `nullability.generatePackageInfo.testOutputDirectory`  | `${project.build.directory}/generated-test-sources/nullability`  | Output directory for generated test `package-info.java` |
+
+The `checking` and `skip` parameters from the table above also apply to this goal.
 
 ### Example: Custom configuration
 
