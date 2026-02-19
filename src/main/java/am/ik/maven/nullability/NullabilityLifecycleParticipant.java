@@ -17,29 +17,32 @@ package am.ik.maven.nullability;
 
 import java.util.Locale;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Lifecycle participant that configures the {@code maven-compiler-plugin} with ErrorProne
  * and NullAway before the lifecycle execution plan is computed. This ensures that the
  * compiler plugin picks up the configuration changes.
  */
-@Component(role = AbstractMavenLifecycleParticipant.class, hint = "nullability")
+@Named("nullability")
+@Singleton
 public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParticipant {
 
 	private static final String PLUGIN_GROUP_ID = "am.ik.maven";
 
 	private static final String PLUGIN_ARTIFACT_ID = "nullability-maven-plugin";
 
-	@org.codehaus.plexus.component.annotations.Requirement
-	private Logger logger;
+	private final Logger logger = LoggerFactory.getLogger(NullabilityLifecycleParticipant.class);
 
 	@Override
 	public void afterProjectsRead(MavenSession session) throws MavenExecutionException {
