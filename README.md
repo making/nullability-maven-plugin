@@ -47,7 +47,7 @@ You also need the JSpecify dependency:
 </dependency>
 ```
 
-Then annotate your packages or classes with `@NullMarked`:
+Then annotate your packages (`package-info.java`) or classes with `@NullMarked`:
 
 ```java
 import org.jspecify.annotations.NullMarked;
@@ -72,7 +72,7 @@ NullAway will report an error if you try to return `null` from a method in a `@N
 
 ### Generating `package-info.java` automatically
 
-When `requireExplicitNullMarking` is enabled (the default), every package must have a `@NullMarked` annotation, typically in a `package-info.java` file. Instead of creating these files manually, you can use the `generate-package-info` goal to auto-generate them during the build:
+By placing `@NullMarked` in a `package-info.java` file, the annotation applies to the entire package, so you don't need to annotate each class individually. However, `@NullMarked` in `package-info.java` does not apply to sub-packages -- you need a `package-info.java` in every sub-package as well, which can be tedious to maintain by hand. The `generate-package-info` goal auto-generates these files during the build:
 
 ```xml
 <plugin>
