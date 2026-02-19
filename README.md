@@ -70,6 +70,43 @@ public class MyService {
 
 NullAway will report an error if you try to return `null` from a method in a `@NullMarked` context without declaring the return type as `@Nullable`.
 
+### Generating `package-info.java` automatically
+
+When `requireExplicitNullMarking` is enabled (the default), every package must have a `@NullMarked` annotation, typically in a `package-info.java` file. Instead of creating these files manually, you can use the `generate-package-info` goal to auto-generate them during the build:
+
+```xml
+<plugin>
+    <groupId>am.ik.maven</groupId>
+    <artifactId>nullability-maven-plugin</artifactId>
+    <version>0.1.2</version>
+    <extensions>true</extensions>
+    <executions>
+        <execution>
+            <goals>
+                <goal>configure</goal>
+                <goal>generate-package-info</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+The goal scans your source directories and generates `@NullMarked` annotated `package-info.java` files for any package that doesn't already have one. Generated files are placed in `target/generated-sources/nullability` by default and added as a compile source root automatically.
+
+If `checking` is set to `tests`, test source directories are also processed and generated files are placed in `target/generated-test-sources/nullability`.
+
+You can also generate `package-info.java` files directly in your source tree by configuring the output directories:
+
+```xml
+<configuration>
+    <checking>tests</checking>
+    <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+    <testOutputDirectory>${project.basedir}/src/test/java</testOutputDirectory>
+</configuration>
+```
+
+Existing `package-info.java` files are never overwritten. The goal is idempotent: running it multiple times produces the same result.
+
 ## Configuration
 
 All configuration parameters can be set either in the plugin `<configuration>` block or as Maven properties.
