@@ -297,6 +297,18 @@ Or equivalently, using Maven properties:
 
 Note that disabling JSpecify mode loses some of NullAway's advanced nullability checking capabilities. See the [NullAway JSpecify Support](https://github.com/uber/NullAway/wiki/JSpecify-Support) documentation for details on what JSpecify mode provides.
 
+## Known Limitations
+
+### Incompatibility with Maven Tiles
+
+This plugin relies on `AbstractMavenLifecycleParticipant` registered as a build extension (`<extensions>true</extensions>`). This architecture is fundamentally incompatible with [Maven Tiles](https://github.com/repaint-io/maven-tiles).
+
+- Since v2.14, tiles explicitly reject `<extensions>true</extensions>` in tile definitions.
+- Even without this validation, Maven discovers and loads extensions during POM model building, but Tiles merges tile content during `afterProjectsRead()`. By the time tiles are merged, extension discovery has already completed.
+- This is an architectural limitation in Maven itself and cannot be solved by the tiles-maven-plugin. See [tiles-maven-plugin#94](https://github.com/repaint-io/maven-tiles/issues/94).
+
+**Workaround**: Declare the plugin directly in the project POM or parent POM.
+
 ## License
 
 Licensed under the Apache License, Version 2.0.
