@@ -50,17 +50,19 @@ class NullAwayArgsBuilderTest {
 	}
 
 	@Test
-	void mainModeWithSpringContractSupport() {
+	void customContractAnnotationsEmpty() {
 		NullabilityConfiguration config = NullabilityConfiguration.defaults();
 		String result = NullAwayArgsBuilder.build(false, config);
-		assertThat(result).contains("-XepOpt:NullAway:CustomContractAnnotations=org.springframework.lang.Contract");
+		assertThat(result).doesNotContain("CustomContractAnnotations");
 	}
 
 	@Test
-	void mainModeWithoutSpringContractSupport() {
-		NullabilityConfiguration config = NullabilityConfiguration.builder().springContractSupport(false).build();
+	void customContractAnnotationsSet() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder()
+			.customContractAnnotations("com.example.MyContract")
+			.build();
 		String result = NullAwayArgsBuilder.build(false, config);
-		assertThat(result).doesNotContain("CustomContractAnnotations");
+		assertThat(result).contains("-XepOpt:NullAway:CustomContractAnnotations=com.example.MyContract");
 	}
 
 	@Test
@@ -68,7 +70,6 @@ class NullAwayArgsBuilderTest {
 		NullabilityConfiguration config = NullabilityConfiguration.defaults();
 		String result = NullAwayArgsBuilder.build(false, config);
 		assertThat(result).doesNotContain("HandleTestAssertionLibraries");
-		assertThat(result).doesNotContain("org.assertj.core.internal.annotation.Contract");
 	}
 
 	@Test
@@ -76,30 +77,6 @@ class NullAwayArgsBuilderTest {
 		NullabilityConfiguration config = NullabilityConfiguration.defaults();
 		String result = NullAwayArgsBuilder.build(true, config);
 		assertThat(result).contains("-XepOpt:NullAway:HandleTestAssertionLibraries=true");
-	}
-
-	@Test
-	void testsModeIncludesAssertJContract() {
-		NullabilityConfiguration config = NullabilityConfiguration.defaults();
-		String result = NullAwayArgsBuilder.build(true, config);
-		assertThat(result).contains("org.assertj.core.internal.annotation.Contract");
-	}
-
-	@Test
-	void testsModeWithSpringContractIncludesBothContracts() {
-		NullabilityConfiguration config = NullabilityConfiguration.defaults();
-		String result = NullAwayArgsBuilder.build(true, config);
-		assertThat(result).contains(
-				"-XepOpt:NullAway:CustomContractAnnotations=org.springframework.lang.Contract,org.assertj.core.internal.annotation.Contract");
-	}
-
-	@Test
-	void testsModeWithoutSpringContractIncludesOnlyAssertJ() {
-		NullabilityConfiguration config = NullabilityConfiguration.builder().springContractSupport(false).build();
-		String result = NullAwayArgsBuilder.build(true, config);
-		assertThat(result)
-			.contains("-XepOpt:NullAway:CustomContractAnnotations=org.assertj.core.internal.annotation.Contract");
-		assertThat(result).doesNotContain("org.springframework.lang.Contract");
 	}
 
 	@Test

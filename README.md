@@ -119,10 +119,15 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 | `nullAwayVersion`            | `nullability.nullAwayVersion`            | (managed)                        | NullAway version                                                       |
 | `checking`                   | `nullability.checking`                   | `main`                           | Checking mode: `main`, `tests`, or `disabled`                          |
 | `requireExplicitNullMarking` | `nullability.requireExplicitNullMarking` | `true`                           | Enable `RequireExplicitNullMarking` check                              |
-| `springContractSupport`      | `nullability.springContractSupport`      | `true`                           | Add `org.springframework.lang.Contract` to custom contract annotations |
+| `customContractAnnotations`  | `nullability.customContractAnnotations`  |                                  | Comma-separated FQCNs of additional contract annotations               |
 | `jspecifyMode`               | `nullability.jspecifyMode`               | `true`                           | Enable NullAway's JSpecify mode (requires JDK 22+)                     |
 | `excludedPaths`              | `nullability.excludedPaths`              | `.*/target/generated-sources/.*` | Regex pattern for paths to exclude                                     |
 | `skip`                       | `nullability.skip`                       | `false`                          | Skip the plugin                                                        |
+
+Since NullAway 0.12.11, any annotation with the simple name `@Contract` is automatically recognized regardless of package (e.g. `org.springframework.lang.Contract`, `org.assertj.core.internal.annotation.Contract`). The `customContractAnnotations` parameter is only needed when:
+
+- Using a contract annotation whose simple name is not `Contract`
+- Using an older NullAway version (pre-0.12.11) that requires explicit registration
 
 ### `generate-package-info` goal configuration
 
@@ -170,8 +175,7 @@ The `checking` and `skip` parameters from the table above also apply to this goa
 
 When `checking` is set to `tests`, the plugin adds a separate configuration for `default-testCompile` with test-specific NullAway options:
 
-- `HandleTestAssertionLibraries=true`
-- AssertJ `@Contract` as a custom contract annotation (requires AssertJ 3.27.4+)
+- `HandleTestAssertionLibraries=true` -- enables `assertThat(x).isNotNull()` as null narrowing
 
 ### Existing compiler configuration
 

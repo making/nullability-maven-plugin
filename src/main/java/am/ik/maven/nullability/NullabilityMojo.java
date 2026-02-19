@@ -53,11 +53,13 @@ public class NullabilityMojo extends AbstractMojo {
 	private boolean requireExplicitNullMarking;
 
 	/**
-	 * Whether to add {@code org.springframework.lang.Contract} to custom contract
-	 * annotations.
+	 * Comma-separated fully qualified class names of additional contract annotations for
+	 * NullAway. Since NullAway 0.12.11, annotations named {@code @Contract} are
+	 * auto-recognized regardless of package, so this is only needed for non-standard
+	 * annotation names.
 	 */
-	@Parameter(property = "nullability.springContractSupport", defaultValue = "true")
-	private boolean springContractSupport;
+	@Parameter(property = "nullability.customContractAnnotations", defaultValue = "")
+	private String customContractAnnotations;
 
 	/**
 	 * Whether to enable NullAway's JSpecify mode. When enabled, NullAway uses JSpecify

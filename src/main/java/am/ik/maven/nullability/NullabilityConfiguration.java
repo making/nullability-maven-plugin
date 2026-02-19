@@ -29,13 +29,14 @@ import java.util.Properties;
  * {@link Checking#DISABLED})
  * @param requireExplicitNullMarking whether to enable the
  * {@code RequireExplicitNullMarking} check
- * @param springContractSupport whether to add {@code org.springframework.lang.Contract}
- * to custom contract annotations
+ * @param customContractAnnotations comma-separated FQCNs of additional contract
+ * annotations for NullAway
  * @param jspecifyMode whether to enable NullAway's JSpecify mode (requires JDK 22+)
  * @param excludedPaths regex pattern for paths to exclude from checking
  */
 public record NullabilityConfiguration(String errorProneVersion, String nullAwayVersion, Checking checking,
-		boolean requireExplicitNullMarking, boolean springContractSupport, boolean jspecifyMode, String excludedPaths) {
+		boolean requireExplicitNullMarking, String customContractAnnotations, boolean jspecifyMode,
+		String excludedPaths) {
 
 	private static final Properties DEFAULTS = loadDefaults();
 
@@ -95,7 +96,7 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 
 		private boolean requireExplicitNullMarking = true;
 
-		private boolean springContractSupport = true;
+		private String customContractAnnotations = "";
 
 		private boolean jspecifyMode = true;
 
@@ -124,8 +125,8 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 			return this;
 		}
 
-		public Builder springContractSupport(boolean springContractSupport) {
-			this.springContractSupport = springContractSupport;
+		public Builder customContractAnnotations(String customContractAnnotations) {
+			this.customContractAnnotations = customContractAnnotations;
 			return this;
 		}
 
@@ -141,7 +142,8 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 
 		public NullabilityConfiguration build() {
 			return new NullabilityConfiguration(this.errorProneVersion, this.nullAwayVersion, this.checking,
-					this.requireExplicitNullMarking, this.springContractSupport, this.jspecifyMode, this.excludedPaths);
+					this.requireExplicitNullMarking, this.customContractAnnotations, this.jspecifyMode,
+					this.excludedPaths);
 		}
 
 	}
