@@ -2,11 +2,11 @@
 # Merge develop to main
 git checkout main
 git merge develop
-./set-release-version.sh
 
-# Update README
+# Update README (version)
 git add README.md
 git commit -m "Update README"
+./set-release-version.sh
 
 # Push main and wait for deployment
 git push origin main
