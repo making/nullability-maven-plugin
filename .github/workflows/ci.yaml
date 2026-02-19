@@ -16,6 +16,9 @@ on:
     paths:
     - src/**
     - pom.xml
+env:
+  MAVEN4_VERSION: '4.0.0-rc-5'
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -46,10 +49,10 @@ jobs:
         cache: maven
     - name: Download Maven 4
       run: |
-        curl -fsSL -o /tmp/apache-maven-4.0.0-rc-5-bin.tar.gz https://dlcdn.apache.org/maven/maven-4/4.0.0-rc-5/binaries/apache-maven-4.0.0-rc-5-bin.tar.gz
-        tar xzf /tmp/apache-maven-4.0.0-rc-5-bin.tar.gz -C /tmp
+        curl -fsSL -o /tmp/apache-maven-${MAVEN4_VERSION}-bin.tar.gz https://dlcdn.apache.org/maven/maven-4/${MAVEN4_VERSION}/binaries/apache-maven-${MAVEN4_VERSION}-bin.tar.gz
+        tar xzf /tmp/apache-maven-${MAVEN4_VERSION}-bin.tar.gz -C /tmp
     - name: Verify with Maven 4
-      run: ./mvnw -V --no-transfer-progress clean verify -Dmaven4.home=/tmp/apache-maven-4.0.0-rc-5
+      run: ./mvnw -V --no-transfer-progress clean verify -Dmaven4.home=/tmp/apache-maven-${MAVEN4_VERSION}
 
   deploy:
     needs: [test, test-maven4]
