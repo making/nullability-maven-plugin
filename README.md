@@ -93,7 +93,7 @@ By placing `@NullMarked` in a `package-info.java` file, the annotation applies t
 
 The goal scans your source directories and generates `@NullMarked` annotated `package-info.java` files for any package that doesn't already have one. Generated files are placed in `target/generated-sources/nullability` by default and added as a compile source root automatically.
 
-If `checking` is set to `tests`, test source directories are also processed and generated files are placed in `target/generated-test-sources/nullability`.
+If the [`checking`](#configuration) parameter (described below) is set to `tests`, test source directories are also processed and generated files are placed in `target/generated-test-sources/nullability`.
 
 Existing `package-info.java` files are never overwritten. The goal is idempotent: running it multiple times produces the same result.
 
