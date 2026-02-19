@@ -192,6 +192,37 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>maven4-it</id>
+			<activation>
+				<property>
+					<name>maven4.home</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-invoker-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>maven4-integration-test</id>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<mavenHome>${maven4.home}</mavenHome>
+									<cloneProjectsTo>${project.build.directory}/it-maven4</cloneProjectsTo>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

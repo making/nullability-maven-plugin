@@ -17,7 +17,43 @@ on:
     - src/**
     - pom.xml
 jobs:
-  build:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@v6
+    - name: Set up JDK 25
+      uses: actions/setup-java@v5
+      with:
+        java-version: '25'
+        distribution: 'liberica'
+        cache: maven
+    - name: Verify
+      run: ./mvnw -V --no-transfer-progress clean verify
+
+  test-maven4:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@v6
+    - name: Set up JDK 25
+      uses: actions/setup-java@v5
+      with:
+        java-version: '25'
+        distribution: 'liberica'
+        cache: maven
+    - name: Download Maven 4
+      run: |
+        curl -fsSL -o /tmp/apache-maven-4.0.0-rc-5-bin.tar.gz https://dlcdn.apache.org/maven/maven-4/4.0.0-rc-5/binaries/apache-maven-4.0.0-rc-5-bin.tar.gz
+        tar xzf /tmp/apache-maven-4.0.0-rc-5-bin.tar.gz -C /tmp
+    - name: Verify with Maven 4
+      run: ./mvnw -V --no-transfer-progress clean verify -Dmaven4.home=/tmp/apache-maven-4.0.0-rc-5
+
+  deploy:
+    needs: [test, test-maven4]
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -25,7 +61,6 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Import Secrets
-      if: github.event_name != 'pull_request'
       id: secrets
       uses: hashicorp/vault-action@v3.4.0
       with:
@@ -39,7 +74,6 @@ jobs:
           kv/data/cicd/gpg secring | GPG_SECRING ;
           kv/data/cicd/gpg passphrase | GPG_PASSPHRASE ;
     - name: Set up JDK 25
-      if: github.event_name != 'pull_request'
       uses: actions/setup-java@v5
       with:
         java-version: '25'
@@ -47,17 +81,7 @@ jobs:
         cache: maven
         gpg-private-key: ${{ steps.secrets.outputs.GPG_SECRING }}
         gpg-passphrase: ${{ steps.secrets.outputs.GPG_PASSPHRASE }}
-    - name: Set up JDK 25 (PR)
-      if: github.event_name == 'pull_request'
-      uses: actions/setup-java@v5
-      with:
-        java-version: '25'
-        distribution: 'liberica'
-        cache: maven
-    - name: Unit Tests
-      run: ./mvnw -V --no-transfer-progress clean test verify
     - name: Generates Maven Settings
-      if: github.event_name != 'pull_request'
       uses: s4u/maven-settings-action@v4.0.0
       with:
         servers: |
@@ -67,7 +91,6 @@ jobs:
               "password": "${{ steps.secrets.outputs.MAVEN_CENTRAL_PASSWORD }}"
           }]
     - name: Deploy to Maven Central
-      if: github.event_name != 'pull_request'
       run: |
         set -e
         mvn -V \
@@ -80,6 +103,6 @@ jobs:
             -Dgpg.passphrase=${GPG_PASSPHRASE} \
             -DskipTests=true
     - name: Revoke token
-      if: always() && github.event_name != 'pull_request'
+      if: always()
       run: |
         curl -X POST -s -H "X-Vault-Token: ${VAULT_TOKEN}" ${{ secrets.VAULT_ADDR }}/v1/auth/token/revoke-self || true
