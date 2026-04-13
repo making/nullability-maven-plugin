@@ -19,8 +19,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.version>3.9.14</maven.version>
 		<spring-boot.version>4.0.5</spring-boot.version>
-		<errorprone.version>2.48.0</errorprone.version>
-		<nullaway.version>0.13.1</nullaway.version>
+		<errorprone.version>2.49.0</errorprone.version>
+		<nullaway.version>0.13.2</nullaway.version>
 	</properties>
 	<licenses>
 		<license>
