@@ -31,15 +31,21 @@ import java.util.Properties;
  * {@code RequireExplicitNullMarking} check
  * @param customContractAnnotations comma-separated FQCNs of additional contract
  * annotations for NullAway
- * @param jspecifyMode whether to enable NullAway's JSpecify mode (requires JDK 22+)
+ * @param jspecifyMode whether to enable NullAway's JSpecify mode (requires JDK 22+, or
+ * JDK 17.0.19+ / JDK 21.0.8+ on OpenJDK builds with the
+ * {@code -XDaddTypeAnnotationsToSymbol=true} javac flag)
  * @param excludedPaths regex pattern for paths to exclude from checking
  * @param nullAwaySeverity severity level for the NullAway check (since 0.4.0)
  * @param requireExplicitNullMarkingSeverity severity level for the
  * {@code RequireExplicitNullMarking} check (since 0.4.0)
+ * @param addTypeAnnotationsToSymbol whether to add the
+ * {@code -XDaddTypeAnnotationsToSymbol=true} javac argument when JSpecify mode is enabled
+ * (since 0.4.0)
  */
 public record NullabilityConfiguration(String errorProneVersion, String nullAwayVersion, Checking checking,
 		boolean requireExplicitNullMarking, String customContractAnnotations, boolean jspecifyMode,
-		String excludedPaths, Severity nullAwaySeverity, Severity requireExplicitNullMarkingSeverity) {
+		String excludedPaths, Severity nullAwaySeverity, Severity requireExplicitNullMarkingSeverity,
+		boolean addTypeAnnotationsToSymbol) {
 
 	private static final Properties DEFAULTS = loadDefaults();
 
@@ -109,6 +115,8 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 
 		private Severity requireExplicitNullMarkingSeverity = Severity.ERROR;
 
+		private boolean addTypeAnnotationsToSymbol = true;
+
 		private Builder() {
 		}
 
@@ -163,10 +171,19 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 			return this;
 		}
 
+		/**
+		 * @since 0.4.0
+		 */
+		public Builder addTypeAnnotationsToSymbol(boolean addTypeAnnotationsToSymbol) {
+			this.addTypeAnnotationsToSymbol = addTypeAnnotationsToSymbol;
+			return this;
+		}
+
 		public NullabilityConfiguration build() {
 			return new NullabilityConfiguration(this.errorProneVersion, this.nullAwayVersion, this.checking,
 					this.requireExplicitNullMarking, this.customContractAnnotations, this.jspecifyMode,
-					this.excludedPaths, this.nullAwaySeverity, this.requireExplicitNullMarkingSeverity);
+					this.excludedPaths, this.nullAwaySeverity, this.requireExplicitNullMarkingSeverity,
+					this.addTypeAnnotationsToSymbol);
 		}
 
 	}

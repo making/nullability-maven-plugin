@@ -120,10 +120,11 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 | `checking`                   | `nullability.checking`                   | `main`                           | Checking mode: `main`, `tests`, or `disabled`                          |
 | `requireExplicitNullMarking` | `nullability.requireExplicitNullMarking` | `true`                           | Enable `RequireExplicitNullMarking` check                              |
 | `customContractAnnotations`  | `nullability.customContractAnnotations`  |                                  | Comma-separated FQCNs of additional contract annotations               |
-| `jspecifyMode`               | `nullability.jspecifyMode`               | `true`                           | Enable NullAway's JSpecify mode (requires JDK 22+)                     |
+| `jspecifyMode`               | `nullability.jspecifyMode`               | `true`                           | Enable NullAway's JSpecify mode (see [Requirements](#requirements))    |
 | `excludedPaths`              | `nullability.excludedPaths`              | `.*/target/generated-sources/.*` | Regex pattern for paths to exclude                                     |
 | `nullAwaySeverity`           | `nullability.nullAwaySeverity`           | `error`                          | Severity for the NullAway check: `error`, `warn`, or `off`             |
 | `requireExplicitNullMarkingSeverity` | `nullability.requireExplicitNullMarkingSeverity` | `error`                  | Severity for the `RequireExplicitNullMarking` check: `error`, `warn`, or `off` |
+| `addTypeAnnotationsToSymbol` | `nullability.addTypeAnnotationsToSymbol` | `true`                           | Add `-XDaddTypeAnnotationsToSymbol=true` to javac when JSpecify mode is on. Set to `false` if your JDK does not support this flag (e.g., Oracle JDK) |
 | `skip`                       | `nullability.skip`                       | `false`                          | Skip the plugin                                                        |
 
 Since NullAway 0.12.11, any annotation with the simple name `@Contract` is automatically recognized regardless of package (e.g. `org.springframework.lang.Contract`, `org.assertj.core.internal.annotation.Contract`). The `customContractAnnotations` parameter is only needed when:
@@ -241,7 +242,7 @@ After the nullability plugin runs, the `-Xplugin:ErrorProne` argument will conta
 
 ## Requirements
 
-- **JDK 22+** (recommended)
+- **JDK 21.0.8+ (OpenJDK)** or **JDK 22+** (recommended)
 - **`maven-compiler-plugin` 3.5+**
 
 This plugin uses `annotationProcessorPaths` to configure ErrorProne and NullAway, which requires `maven-compiler-plugin` 3.5 or later. Maven 3.9+ includes a sufficient default version, but Maven 3.8.x defaults to 3.1 which does not support `annotationProcessorPaths`. The plugin cannot override this version at runtime.
@@ -270,20 +271,49 @@ If you are using Maven 3.8.x, a minimal declaration in `<pluginManagement>` is s
 This plugin itself is compiled for Java 17, but the default dependencies have higher JDK requirements:
 
 - **ErrorProne 2.43.0+** requires JDK 21+ to run. ErrorProne 2.42.0 was the last version to support JDK 17.
-- **NullAway's JSpecify mode** (`JSpecifyMode=true`, enabled by default) requires JDK 22+, or JDK 21 with the additional flag `-XDaddTypeAnnotationsToSymbol=true` (OpenJDK-based distributions such as Temurin or Zulu; Oracle JDK 21 does not support this flag). See the [NullAway JSpecify Support](https://github.com/uber/NullAway/wiki/JSpecify-Support#supported-jdk-versions) documentation for details.
+- **NullAway's JSpecify mode** (`JSpecifyMode=true`, enabled by default) requires JDK 22+, or JDK 17.0.19+ / JDK 21.0.8+ with the additional javac flag `-XDaddTypeAnnotationsToSymbol=true`. The flag is supported by OpenJDK-based distributions (such as Liberica, Temurin, or Zulu); Oracle JDK 17 and 21 do not support this flag. See the [NullAway JSpecify Support](https://github.com/uber/NullAway/wiki/JSpecify-Support#supported-jdk-versions) documentation for details.
 
-These are constraints imposed by ErrorProne and NullAway, not by this plugin. You can use `--release 17` (or lower) to target older Java versions while building with JDK 22+.
+To make JSpecify mode work on JDK 17.0.19+ / 21.0.8+ out of the box, this plugin automatically adds `-XDaddTypeAnnotationsToSymbol=true` to the javac arguments when JSpecify mode is enabled. The flag is a no-op on JDK 22+. If you are running on a JDK that does not support this flag (e.g., Oracle JDK), set `addTypeAnnotationsToSymbol` to `false`:
+
+```xml
+<configuration>
+    <addTypeAnnotationsToSymbol>false</addTypeAnnotationsToSymbol>
+</configuration>
+```
+
+These are constraints imposed by ErrorProne and NullAway, not by this plugin. You can use `--release 17` (or lower) to target older Java versions while building with a higher JDK.
 
 The following table summarizes the minimum JDK version required to **run the build** for each configuration combination:
 
-| ErrorProne version | JSpecifyMode     | Minimum JDK |
-|--------------------|------------------|-------------|
-| 2.43.0+ (default)  | `true` (default) | **JDK 22+** |
-| 2.42.0             | `true` (default) | JDK 22+     |
-| 2.43.0+ (default)  | `false`          | JDK 21+     |
-| 2.42.0             | `false`          | JDK 17+     |
+| ErrorProne version | JSpecifyMode     | Minimum JDK                                  |
+|--------------------|------------------|----------------------------------------------|
+| 2.43.0+ (default)  | `true` (default) | **JDK 21.0.8+ (OpenJDK)** or JDK 22+         |
+| 2.42.0             | `true` (default) | **JDK 17.0.19+ (OpenJDK)** or JDK 22+        |
+| 2.43.0+ (default)  | `false`          | JDK 21+                                      |
+| 2.42.0             | `false`          | JDK 17+                                      |
 
-To use an older JDK, adjust the configuration accordingly:
+To use ErrorProne 2.42.0 (so the build runs on JDK 17.0.19+) while keeping JSpecify mode enabled:
+
+```xml
+<plugin>
+    <groupId>am.ik.maven</groupId>
+    <artifactId>nullability-maven-plugin</artifactId>
+    <version>0.3.0</version>
+    <extensions>true</extensions>
+    <configuration>
+        <errorProneVersion>2.42.0</errorProneVersion>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>configure</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+Or, to disable JSpecify mode entirely (loses some advanced checking capabilities):
 
 ```xml
 <plugin>
