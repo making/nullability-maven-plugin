@@ -67,10 +67,10 @@ public final class NullAwayArgsBuilder {
 			options.add("-XepOpt:NullAway:HandleTestAssertionLibraries=true");
 		}
 
-		options.add("-Xep:NullAway:ERROR");
+		options.add("-Xep:NullAway:" + config.nullAwaySeverity().name());
 
 		if (config.requireExplicitNullMarking()) {
-			options.add("-Xep:RequireExplicitNullMarking:ERROR");
+			options.add("-Xep:RequireExplicitNullMarking:" + config.requireExplicitNullMarkingSeverity().name());
 		}
 
 		String excludedPaths = buildExcludedPaths(forTests, config);

@@ -122,6 +122,8 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 | `customContractAnnotations`  | `nullability.customContractAnnotations`  |                                  | Comma-separated FQCNs of additional contract annotations               |
 | `jspecifyMode`               | `nullability.jspecifyMode`               | `true`                           | Enable NullAway's JSpecify mode (requires JDK 22+)                     |
 | `excludedPaths`              | `nullability.excludedPaths`              | `.*/target/generated-sources/.*` | Regex pattern for paths to exclude                                     |
+| `nullAwaySeverity`           | `nullability.nullAwaySeverity`           | `error`                          | Severity for the NullAway check: `error`, `warn`, or `off`             |
+| `requireExplicitNullMarkingSeverity` | `nullability.requireExplicitNullMarkingSeverity` | `error`                  | Severity for the `RequireExplicitNullMarking` check: `error`, `warn`, or `off` |
 | `skip`                       | `nullability.skip`                       | `false`                          | Skip the plugin                                                        |
 
 Since NullAway 0.12.11, any annotation with the simple name `@Contract` is automatically recognized regardless of package (e.g. `org.springframework.lang.Contract`, `org.assertj.core.internal.annotation.Contract`). The `customContractAnnotations` parameter is only needed when:

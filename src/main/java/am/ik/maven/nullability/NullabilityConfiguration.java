@@ -33,10 +33,13 @@ import java.util.Properties;
  * annotations for NullAway
  * @param jspecifyMode whether to enable NullAway's JSpecify mode (requires JDK 22+)
  * @param excludedPaths regex pattern for paths to exclude from checking
+ * @param nullAwaySeverity severity level for the NullAway check (since 0.4.0)
+ * @param requireExplicitNullMarkingSeverity severity level for the
+ * {@code RequireExplicitNullMarking} check (since 0.4.0)
  */
 public record NullabilityConfiguration(String errorProneVersion, String nullAwayVersion, Checking checking,
 		boolean requireExplicitNullMarking, String customContractAnnotations, boolean jspecifyMode,
-		String excludedPaths) {
+		String excludedPaths, Severity nullAwaySeverity, Severity requireExplicitNullMarkingSeverity) {
 
 	private static final Properties DEFAULTS = loadDefaults();
 
@@ -102,6 +105,10 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 
 		private String excludedPaths = DEFAULT_EXCLUDED_PATHS;
 
+		private Severity nullAwaySeverity = Severity.ERROR;
+
+		private Severity requireExplicitNullMarkingSeverity = Severity.ERROR;
+
 		private Builder() {
 		}
 
@@ -140,10 +147,26 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 			return this;
 		}
 
+		/**
+		 * @since 0.4.0
+		 */
+		public Builder nullAwaySeverity(Severity nullAwaySeverity) {
+			this.nullAwaySeverity = nullAwaySeverity;
+			return this;
+		}
+
+		/**
+		 * @since 0.4.0
+		 */
+		public Builder requireExplicitNullMarkingSeverity(Severity requireExplicitNullMarkingSeverity) {
+			this.requireExplicitNullMarkingSeverity = requireExplicitNullMarkingSeverity;
+			return this;
+		}
+
 		public NullabilityConfiguration build() {
 			return new NullabilityConfiguration(this.errorProneVersion, this.nullAwayVersion, this.checking,
 					this.requireExplicitNullMarking, this.customContractAnnotations, this.jspecifyMode,
-					this.excludedPaths);
+					this.excludedPaths, this.nullAwaySeverity, this.requireExplicitNullMarkingSeverity);
 		}
 
 	}
