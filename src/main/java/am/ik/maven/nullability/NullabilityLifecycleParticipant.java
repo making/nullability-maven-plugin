@@ -116,6 +116,8 @@ public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParti
 					Severity.valueOf(getStringValue(config, "requireExplicitNullMarkingSeverity",
 							resolveProperty(project, "nullability.requireExplicitNullMarkingSeverity", "error"))
 						.toUpperCase(Locale.ROOT)))
+			.addTypeAnnotationsToSymbol(getBooleanValue(config, "addTypeAnnotationsToSymbol",
+					resolveProperty(project, "nullability.addTypeAnnotationsToSymbol", "true")))
 			.build();
 	}
 

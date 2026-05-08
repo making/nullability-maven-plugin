@@ -118,6 +118,12 @@ public final class CompilerConfigurer {
 		addArgIfAbsent(compilerArgs, "-XDcompilePolicy=simple");
 		addArgIfAbsent(compilerArgs, "--should-stop=ifError=FLOW");
 
+		// Required for NullAway JSpecify mode on JDK 17.0.19+ and JDK 21.0.8+ (OpenJDK).
+		// No-op on JDK 22+. See https://github.com/uber/NullAway/wiki/JSpecify-Support
+		if (nullabilityConfig.jspecifyMode() && nullabilityConfig.addTypeAnnotationsToSymbol()) {
+			addArgIfAbsent(compilerArgs, "-XDaddTypeAnnotationsToSymbol=true");
+		}
+
 		addOrMergeErrorProneArg(compilerArgs, forTests, nullabilityConfig);
 
 		for (String flag : JVM_MODULE_FLAGS) {

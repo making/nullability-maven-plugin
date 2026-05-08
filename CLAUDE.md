@@ -30,7 +30,7 @@ repository.
 ### Prerequisites
 
 - Java 17+ (for compiling the plugin itself)
-- JDK 22+ (for running ITs, due to ErrorProne 2.43.0+ requiring JDK 21+ and NullAway JSpecify mode requiring JDK 22+)
+- JDK 21.0.8+ (OpenJDK) or JDK 22+ for running ITs. ErrorProne 2.43.0+ requires JDK 21+; NullAway JSpecify mode requires JDK 22+, or JDK 17.0.19+ / JDK 21.0.8+ with the `-XDaddTypeAnnotationsToSymbol=true` javac flag (the plugin adds this flag automatically). Oracle JDK 17/21 does not support this flag — use Liberica/Temurin/Zulu.
 
 ### Code Standards
 

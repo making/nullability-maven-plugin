@@ -100,6 +100,44 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
+	void addsAddTypeAnnotationsToSymbolFlagByDefault() throws Exception {
+		MavenProject project = projectWithCompilerPlugin();
+		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
+
+		Xpp3Dom config = (Xpp3Dom) findCompilerPlugin(project).getConfiguration();
+		String[] argValues = Arrays.stream(config.getChild("compilerArgs").getChildren("arg"))
+			.map(Xpp3Dom::getValue)
+			.toArray(String[]::new);
+		assertThat(argValues).contains("-XDaddTypeAnnotationsToSymbol=true");
+	}
+
+	@Test
+	void omitsAddTypeAnnotationsToSymbolFlagWhenJSpecifyModeDisabled() throws Exception {
+		NullabilityConfiguration config = NullabilityConfiguration.builder().jspecifyMode(false).build();
+		MavenProject project = projectWithCompilerPlugin();
+		CompilerConfigurer.configure(project, config);
+
+		Xpp3Dom pluginConfig = (Xpp3Dom) findCompilerPlugin(project).getConfiguration();
+		String[] argValues = Arrays.stream(pluginConfig.getChild("compilerArgs").getChildren("arg"))
+			.map(Xpp3Dom::getValue)
+			.toArray(String[]::new);
+		assertThat(argValues).doesNotContain("-XDaddTypeAnnotationsToSymbol=true");
+	}
+
+	@Test
+	void omitsAddTypeAnnotationsToSymbolFlagWhenOptOut() throws Exception {
+		NullabilityConfiguration config = NullabilityConfiguration.builder().addTypeAnnotationsToSymbol(false).build();
+		MavenProject project = projectWithCompilerPlugin();
+		CompilerConfigurer.configure(project, config);
+
+		Xpp3Dom pluginConfig = (Xpp3Dom) findCompilerPlugin(project).getConfiguration();
+		String[] argValues = Arrays.stream(pluginConfig.getChild("compilerArgs").getChildren("arg"))
+			.map(Xpp3Dom::getValue)
+			.toArray(String[]::new);
+		assertThat(argValues).doesNotContain("-XDaddTypeAnnotationsToSymbol=true");
+	}
+
+	@Test
 	void preservesExistingAnnotationProcessorPaths() throws Exception {
 		MavenProject project = new MavenProject();
 		project.setBuild(new Build());

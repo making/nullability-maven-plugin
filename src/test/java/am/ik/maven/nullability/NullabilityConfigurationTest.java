@@ -31,6 +31,7 @@ class NullabilityConfigurationTest {
 		assertThat(config.customContractAnnotations()).isEmpty();
 		assertThat(config.jspecifyMode()).isTrue();
 		assertThat(config.excludedPaths()).isEqualTo(".*/target/generated-sources/.*");
+		assertThat(config.addTypeAnnotationsToSymbol()).isTrue();
 	}
 
 	@Test
@@ -43,6 +44,7 @@ class NullabilityConfigurationTest {
 			.customContractAnnotations("com.example.MyContract")
 			.jspecifyMode(false)
 			.excludedPaths(".*/generated/.*")
+			.addTypeAnnotationsToSymbol(false)
 			.build();
 		assertThat(config.errorProneVersion()).isEqualTo("2.46.0");
 		assertThat(config.nullAwayVersion()).isEqualTo("0.12.0");
@@ -51,6 +53,7 @@ class NullabilityConfigurationTest {
 		assertThat(config.customContractAnnotations()).isEqualTo("com.example.MyContract");
 		assertThat(config.jspecifyMode()).isFalse();
 		assertThat(config.excludedPaths()).isEqualTo(".*/generated/.*");
+		assertThat(config.addTypeAnnotationsToSymbol()).isFalse();
 	}
 
 }

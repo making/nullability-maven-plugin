@@ -63,13 +63,25 @@ public class ConfigureMojo extends AbstractMojo {
 
 	/**
 	 * Whether to enable NullAway's JSpecify mode. When enabled, NullAway uses JSpecify
-	 * semantics for nullability checking. Requires JDK 22+, or JDK 21 with the
-	 * {@code -XDaddTypeAnnotationsToSymbol=true} flag (OpenJDK-based distributions only).
-	 * Disabling this allows running on older JDKs at the cost of reduced checking
-	 * capabilities.
+	 * semantics for nullability checking. Requires JDK 22+, or JDK 17.0.19+ / JDK 21.0.8+
+	 * with the {@code -XDaddTypeAnnotationsToSymbol=true} flag (OpenJDK-based
+	 * distributions only). Disabling this allows running on older JDKs at the cost of
+	 * reduced checking capabilities.
 	 */
 	@Parameter(property = "nullability.jspecifyMode", defaultValue = "true")
 	private boolean jspecifyMode;
+
+	/**
+	 * Whether to add the {@code -XDaddTypeAnnotationsToSymbol=true} javac argument when
+	 * NullAway's JSpecify mode is enabled. Required on JDK 17.0.19+ and JDK 21.0.8+
+	 * (OpenJDK-based distributions only) so that NullAway can read type-use annotations
+	 * from bytecodes. No-op on JDK 22+. Set to {@code false} when running on a JDK that
+	 * does not support this flag (e.g., Oracle JDK 17 or 21).
+	 *
+	 * @since 0.4.0
+	 */
+	@Parameter(property = "nullability.addTypeAnnotationsToSymbol", defaultValue = "true")
+	private boolean addTypeAnnotationsToSymbol;
 
 	/**
 	 * Regex pattern for paths to exclude from checking.
