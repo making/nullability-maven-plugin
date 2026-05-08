@@ -95,6 +95,9 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 		return new Builder();
 	}
 
+	/**
+	 * Builder for {@link NullabilityConfiguration}.
+	 */
 	public static final class Builder {
 
 		private String errorProneVersion = DEFAULT_ERROR_PRONE_VERSION;
@@ -120,42 +123,80 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 		private Builder() {
 		}
 
+		/**
+		 * Sets the ErrorProne version.
+		 * @param errorProneVersion the ErrorProne version to use
+		 * @return this builder
+		 */
 		public Builder errorProneVersion(String errorProneVersion) {
 			this.errorProneVersion = errorProneVersion;
 			return this;
 		}
 
+		/**
+		 * Sets the NullAway version.
+		 * @param nullAwayVersion the NullAway version to use
+		 * @return this builder
+		 */
 		public Builder nullAwayVersion(String nullAwayVersion) {
 			this.nullAwayVersion = nullAwayVersion;
 			return this;
 		}
 
+		/**
+		 * Sets the checking mode.
+		 * @param checking the checking mode
+		 * @return this builder
+		 */
 		public Builder checking(Checking checking) {
 			this.checking = checking;
 			return this;
 		}
 
+		/**
+		 * Sets whether to enable the {@code RequireExplicitNullMarking} check.
+		 * @param requireExplicitNullMarking {@code true} to enable the check
+		 * @return this builder
+		 */
 		public Builder requireExplicitNullMarking(boolean requireExplicitNullMarking) {
 			this.requireExplicitNullMarking = requireExplicitNullMarking;
 			return this;
 		}
 
+		/**
+		 * Sets the comma-separated FQCNs of additional contract annotations for NullAway.
+		 * @param customContractAnnotations comma-separated fully qualified class names
+		 * @return this builder
+		 */
 		public Builder customContractAnnotations(String customContractAnnotations) {
 			this.customContractAnnotations = customContractAnnotations;
 			return this;
 		}
 
+		/**
+		 * Sets whether to enable NullAway's JSpecify mode.
+		 * @param jspecifyMode {@code true} to enable JSpecify mode
+		 * @return this builder
+		 */
 		public Builder jspecifyMode(boolean jspecifyMode) {
 			this.jspecifyMode = jspecifyMode;
 			return this;
 		}
 
+		/**
+		 * Sets the regex pattern for paths to exclude from checking.
+		 * @param excludedPaths regex pattern for paths to exclude
+		 * @return this builder
+		 */
 		public Builder excludedPaths(String excludedPaths) {
 			this.excludedPaths = excludedPaths;
 			return this;
 		}
 
 		/**
+		 * Sets the severity level for the NullAway check.
+		 * @param nullAwaySeverity severity level for NullAway
+		 * @return this builder
 		 * @since 0.4.0
 		 */
 		public Builder nullAwaySeverity(Severity nullAwaySeverity) {
@@ -164,6 +205,10 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 		}
 
 		/**
+		 * Sets the severity level for the {@code RequireExplicitNullMarking} check.
+		 * @param requireExplicitNullMarkingSeverity severity level for
+		 * {@code RequireExplicitNullMarking}
+		 * @return this builder
 		 * @since 0.4.0
 		 */
 		public Builder requireExplicitNullMarkingSeverity(Severity requireExplicitNullMarkingSeverity) {
@@ -172,6 +217,10 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 		}
 
 		/**
+		 * Sets whether to add the {@code -XDaddTypeAnnotationsToSymbol=true} javac
+		 * argument when JSpecify mode is enabled.
+		 * @param addTypeAnnotationsToSymbol {@code true} to add the flag
+		 * @return this builder
 		 * @since 0.4.0
 		 */
 		public Builder addTypeAnnotationsToSymbol(boolean addTypeAnnotationsToSymbol) {
@@ -179,6 +228,10 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 			return this;
 		}
 
+		/**
+		 * Builds a new {@link NullabilityConfiguration} from the current builder state.
+		 * @return a new {@link NullabilityConfiguration}
+		 */
 		public NullabilityConfiguration build() {
 			return new NullabilityConfiguration(this.errorProneVersion, this.nullAwayVersion, this.checking,
 					this.requireExplicitNullMarking, this.customContractAnnotations, this.jspecifyMode,

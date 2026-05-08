@@ -37,6 +37,13 @@ import org.apache.maven.project.MavenProject;
 @Mojo(name = "generate-package-info", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class GeneratePackageInfoMojo extends AbstractMojo {
 
+	/**
+	 * Creates a new {@code GeneratePackageInfoMojo}. Instantiated by Maven; not intended
+	 * for direct use.
+	 */
+	public GeneratePackageInfoMojo() {
+	}
+
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	private MavenProject project;
 

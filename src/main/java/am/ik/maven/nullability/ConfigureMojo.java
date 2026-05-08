@@ -29,6 +29,13 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class ConfigureMojo extends AbstractMojo {
 
 	/**
+	 * Creates a new {@code ConfigureMojo}. Instantiated by Maven; not intended for direct
+	 * use.
+	 */
+	public ConfigureMojo() {
+	}
+
+	/**
 	 * The ErrorProne version to use.
 	 */
 	@Parameter(property = "nullability.errorProneVersion")

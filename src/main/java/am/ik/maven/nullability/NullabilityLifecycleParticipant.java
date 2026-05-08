@@ -38,6 +38,13 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParticipant {
 
+	/**
+	 * Creates a new {@code NullabilityLifecycleParticipant}. Instantiated by the Maven
+	 * Sisu/Plexus container; not intended for direct use.
+	 */
+	public NullabilityLifecycleParticipant() {
+	}
+
 	private static final String PLUGIN_GROUP_ID = "am.ik.maven";
 
 	private static final String PLUGIN_ARTIFACT_ID = "nullability-maven-plugin";
