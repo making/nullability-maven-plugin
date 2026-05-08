@@ -173,32 +173,6 @@ The `checking` and `skip` parameters from the table above also apply to this goa
 </properties>
 ```
 
-### Severity
-
-By default, both NullAway and `RequireExplicitNullMarking` violations are reported as errors and fail the build. To loosen this -- for example to migrate an existing codebase incrementally -- lower the severity to `warn` (still printed by the compiler) or `off` (suppressed entirely):
-
-```xml
-<plugin>
-    <groupId>am.ik.maven</groupId>
-    <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.3.0</version>
-    <extensions>true</extensions>
-    <configuration>
-        <nullAwaySeverity>warn</nullAwaySeverity>
-        <requireExplicitNullMarkingSeverity>warn</requireExplicitNullMarkingSeverity>
-    </configuration>
-    <executions>
-        <execution>
-            <goals>
-                <goal>configure</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin>
-```
-
-The two severities can be set independently.
-
 ### Test checking
 
 When `checking` is set to `tests`, the plugin adds a separate configuration for `default-testCompile` with test-specific NullAway options:
