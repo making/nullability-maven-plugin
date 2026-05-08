@@ -179,4 +179,54 @@ class NullAwayArgsBuilderTest {
 		assertThat(options).anyMatch(opt -> opt.startsWith("-XepExcludedPaths:") && opt.contains(".*/test/java/.*"));
 	}
 
+	@Test
+	void nullAwaySeverityDefaultsToError() {
+		NullabilityConfiguration config = NullabilityConfiguration.defaults();
+		String result = NullAwayArgsBuilder.build(false, config);
+		assertThat(result).contains("-Xep:NullAway:ERROR");
+	}
+
+	@Test
+	void nullAwaySeverityWarn() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder().nullAwaySeverity(Severity.WARN).build();
+		String result = NullAwayArgsBuilder.build(false, config);
+		assertThat(result).contains("-Xep:NullAway:WARN");
+		assertThat(result).doesNotContain("-Xep:NullAway:ERROR");
+	}
+
+	@Test
+	void nullAwaySeverityOff() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder().nullAwaySeverity(Severity.OFF).build();
+		String result = NullAwayArgsBuilder.build(false, config);
+		assertThat(result).contains("-Xep:NullAway:OFF");
+		assertThat(result).doesNotContain("-Xep:NullAway:ERROR");
+	}
+
+	@Test
+	void requireExplicitNullMarkingSeverityDefaultsToError() {
+		NullabilityConfiguration config = NullabilityConfiguration.defaults();
+		String result = NullAwayArgsBuilder.build(false, config);
+		assertThat(result).contains("-Xep:RequireExplicitNullMarking:ERROR");
+	}
+
+	@Test
+	void requireExplicitNullMarkingSeverityWarn() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder()
+			.requireExplicitNullMarkingSeverity(Severity.WARN)
+			.build();
+		String result = NullAwayArgsBuilder.build(false, config);
+		assertThat(result).contains("-Xep:RequireExplicitNullMarking:WARN");
+		assertThat(result).doesNotContain("-Xep:RequireExplicitNullMarking:ERROR");
+	}
+
+	@Test
+	void requireExplicitNullMarkingSeverityIgnoredWhenDisabled() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder()
+			.requireExplicitNullMarking(false)
+			.requireExplicitNullMarkingSeverity(Severity.WARN)
+			.build();
+		String result = NullAwayArgsBuilder.build(false, config);
+		assertThat(result).doesNotContain("RequireExplicitNullMarking");
+	}
+
 }

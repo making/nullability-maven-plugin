@@ -78,6 +78,24 @@ public class ConfigureMojo extends AbstractMojo {
 	private String excludedPaths;
 
 	/**
+	 * Severity level for the NullAway check. Accepted values: {@code error} (default),
+	 * {@code warn}, {@code off}.
+	 *
+	 * @since 0.4.0
+	 */
+	@Parameter(property = "nullability.nullAwaySeverity", defaultValue = "error")
+	private String nullAwaySeverity;
+
+	/**
+	 * Severity level for the {@code RequireExplicitNullMarking} check. Accepted values:
+	 * {@code error} (default), {@code warn}, {@code off}.
+	 *
+	 * @since 0.4.0
+	 */
+	@Parameter(property = "nullability.requireExplicitNullMarkingSeverity", defaultValue = "error")
+	private String requireExplicitNullMarkingSeverity;
+
+	/**
 	 * Whether to skip the plugin execution.
 	 */
 	@Parameter(property = "nullability.skip", defaultValue = "false")

@@ -109,6 +109,13 @@ public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParti
 			.excludedPaths(getStringValue(config, "excludedPaths",
 					resolveProperty(project, "nullability.excludedPaths",
 							NullabilityConfiguration.DEFAULT_EXCLUDED_PATHS)))
+			.nullAwaySeverity(Severity.valueOf(getStringValue(config, "nullAwaySeverity",
+					resolveProperty(project, "nullability.nullAwaySeverity", "error"))
+				.toUpperCase(Locale.ROOT)))
+			.requireExplicitNullMarkingSeverity(
+					Severity.valueOf(getStringValue(config, "requireExplicitNullMarkingSeverity",
+							resolveProperty(project, "nullability.requireExplicitNullMarkingSeverity", "error"))
+						.toUpperCase(Locale.ROOT)))
 			.build();
 	}
 

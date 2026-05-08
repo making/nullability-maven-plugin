@@ -122,6 +122,8 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 | `customContractAnnotations`  | `nullability.customContractAnnotations`  |                                  | Comma-separated FQCNs of additional contract annotations               |
 | `jspecifyMode`               | `nullability.jspecifyMode`               | `true`                           | Enable NullAway's JSpecify mode (requires JDK 22+)                     |
 | `excludedPaths`              | `nullability.excludedPaths`              | `.*/target/generated-sources/.*` | Regex pattern for paths to exclude                                     |
+| `nullAwaySeverity`           | `nullability.nullAwaySeverity`           | `error`                          | Severity for the NullAway check: `error`, `warn`, or `off`             |
+| `requireExplicitNullMarkingSeverity` | `nullability.requireExplicitNullMarkingSeverity` | `error`                  | Severity for the `RequireExplicitNullMarking` check: `error`, `warn`, or `off` |
 | `skip`                       | `nullability.skip`                       | `false`                          | Skip the plugin                                                        |
 
 Since NullAway 0.12.11, any annotation with the simple name `@Contract` is automatically recognized regardless of package (e.g. `org.springframework.lang.Contract`, `org.assertj.core.internal.annotation.Contract`). The `customContractAnnotations` parameter is only needed when:
@@ -170,6 +172,32 @@ The `checking` and `skip` parameters from the table above also apply to this goa
     <nullability.checking>tests</nullability.checking>
 </properties>
 ```
+
+### Severity
+
+By default, both NullAway and `RequireExplicitNullMarking` violations are reported as errors and fail the build. To loosen this -- for example to migrate an existing codebase incrementally -- lower the severity to `warn` (still printed by the compiler) or `off` (suppressed entirely):
+
+```xml
+<plugin>
+    <groupId>am.ik.maven</groupId>
+    <artifactId>nullability-maven-plugin</artifactId>
+    <version>0.3.0</version>
+    <extensions>true</extensions>
+    <configuration>
+        <nullAwaySeverity>warn</nullAwaySeverity>
+        <requireExplicitNullMarkingSeverity>warn</requireExplicitNullMarkingSeverity>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>configure</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+The two severities can be set independently.
 
 ### Test checking
 
