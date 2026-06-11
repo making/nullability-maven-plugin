@@ -90,8 +90,18 @@ public final class PackageInfoGenerator {
 			Path packageDir = outputDirectory.resolve(packageName.replace('.', '/'));
 			Files.createDirectories(packageDir);
 			Path packageInfoPath = packageDir.resolve(PACKAGE_INFO);
-			String content = "@NullMarked\npackage " + packageName
-					+ ";\n\nimport org.jspecify.annotations.NullMarked;\n";
+			// Include a Javadoc comment so that the generated package-info.java does not
+			// trigger "no comment" warnings when running the javadoc tool.
+			String content = """
+					/**
+					 * This package is null-marked: all types and their members are non-null by
+					 * default unless explicitly annotated as {@code @Nullable}.
+					 */
+					@NullMarked
+					package %s;
+
+					import org.jspecify.annotations.NullMarked;
+					""".formatted(packageName);
 			Files.writeString(packageInfoPath, content);
 			generated.add(packageName);
 		}
