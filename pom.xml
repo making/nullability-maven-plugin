@@ -20,7 +20,7 @@
 		<maven.version>3.9.16</maven.version>
 		<spring-boot.version>4.1.0</spring-boot.version>
 		<errorprone.version>2.50.0</errorprone.version>
-		<nullaway.version>0.13.6</nullaway.version>
+		<nullaway.version>0.13.7</nullaway.version>
 	</properties>
 	<licenses>
 		<license>
