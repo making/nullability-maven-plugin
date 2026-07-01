@@ -192,11 +192,7 @@ public final class CompilerConfigurer {
 			if (build.getPluginManagement() != null) {
 				for (Plugin managedPlugin : build.getPluginManagement().getPlugins()) {
 					if (isCompilerPlugin(managedPlugin)) {
-						Plugin plugin = new Plugin();
-						plugin.setGroupId(COMPILER_PLUGIN_GROUP_ID);
-						plugin.setArtifactId(COMPILER_PLUGIN_ARTIFACT_ID);
-						build.addPlugin(plugin);
-						return plugin;
+						return managedPlugin;
 					}
 				}
 			}
