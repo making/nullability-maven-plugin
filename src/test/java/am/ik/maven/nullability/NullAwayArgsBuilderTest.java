@@ -15,7 +15,9 @@
  */
 package am.ik.maven.nullability;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -217,6 +219,47 @@ class NullAwayArgsBuilderTest {
 		String result = NullAwayArgsBuilder.build(false, config);
 		assertThat(result).contains("-Xep:RequireExplicitNullMarking:WARN");
 		assertThat(result).doesNotContain("-Xep:RequireExplicitNullMarking:ERROR");
+	}
+
+	@Test
+	void nullAwayOptionIsAppended() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder()
+			.nullAwayOption("KnownInitializers", "com.example.Service.init")
+			.build();
+		String result = NullAwayArgsBuilder.build(false, config);
+		assertThat(result).contains("-XepOpt:NullAway:KnownInitializers=com.example.Service.init");
+	}
+
+	@Test
+	void nullAwayOptionsArePassedToTestCompilation() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder()
+			.nullAwayOption("TreatGeneratedAsUnannotated", "true")
+			.build();
+		String result = NullAwayArgsBuilder.build(true, config);
+		assertThat(result).contains("-XepOpt:NullAway:TreatGeneratedAsUnannotated=true");
+		assertThat(result).contains("-XepOpt:NullAway:HandleTestAssertionLibraries=true");
+	}
+
+	@Test
+	void nullAwayOptionOverridesDerivedOption() {
+		NullabilityConfiguration config = NullabilityConfiguration.builder()
+			.customContractAnnotations("com.example.MyContract")
+			.nullAwayOption("CustomContractAnnotations", "com.example.OtherContract")
+			.build();
+		List<String> options = NullAwayArgsBuilder.buildNullAwayOptions(false, config);
+		assertThat(options).contains("-XepOpt:NullAway:CustomContractAnnotations=com.example.OtherContract")
+			.doesNotContain("-XepOpt:NullAway:CustomContractAnnotations=com.example.MyContract");
+	}
+
+	@Test
+	void nullAwayOptionsKeepTheConfiguredOrder() {
+		Map<String, String> options = new LinkedHashMap<>();
+		options.put("AcknowledgeRestrictiveAnnotations", "true");
+		options.put("TreatGeneratedAsUnannotated", "true");
+		NullabilityConfiguration config = NullabilityConfiguration.builder().nullAwayOptions(options).build();
+		String result = NullAwayArgsBuilder.build(false, config);
+		assertThat(result).contains("-XepOpt:NullAway:AcknowledgeRestrictiveAnnotations=true"
+				+ " -XepOpt:NullAway:TreatGeneratedAsUnannotated=true");
 	}
 
 	@Test

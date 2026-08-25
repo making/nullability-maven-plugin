@@ -15,6 +15,8 @@
  */
 package am.ik.maven.nullability;
 
+import java.util.Map;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -113,6 +115,18 @@ public class ConfigureMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "nullability.requireExplicitNullMarkingSeverity", defaultValue = "error")
 	private String requireExplicitNullMarkingSeverity;
+
+	/**
+	 * Additional NullAway options keyed by option name. Each entry is passed to
+	 * ErrorProne as {@code -XepOpt:NullAway:<name>=<value>}, so that any NullAway option
+	 * can be set without configuring the {@code maven-compiler-plugin} by hand. An entry
+	 * overrides the option of the same name derived from the other parameters. Option
+	 * names and values must not contain whitespace.
+	 *
+	 * @since 0.5.0
+	 */
+	@Parameter
+	private Map<String, String> nullAwayOptions;
 
 	/**
 	 * Whether to skip the plugin execution.

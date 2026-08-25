@@ -15,7 +15,9 @@
  */
 package am.ik.maven.nullability;
 
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -48,6 +50,8 @@ public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParti
 	private static final String PLUGIN_GROUP_ID = "am.ik.maven";
 
 	private static final String PLUGIN_ARTIFACT_ID = "nullability-maven-plugin";
+
+	private static final String NULLAWAY_OPTIONS_PROPERTY_PREFIX = "nullability.nullAwayOptions.";
 
 	private final Logger logger = LoggerFactory.getLogger(NullabilityLifecycleParticipant.class);
 
@@ -90,7 +94,7 @@ public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParti
 		return null;
 	}
 
-	private NullabilityConfiguration parseConfiguration(Plugin plugin, MavenProject project) {
+	NullabilityConfiguration parseConfiguration(Plugin plugin, MavenProject project) throws MavenExecutionException {
 		Xpp3Dom config = (Xpp3Dom) plugin.getConfiguration();
 
 		if (getBooleanValue(config, "skip", resolveProperty(project, "nullability.skip", "false"))) {
@@ -125,7 +129,67 @@ public class NullabilityLifecycleParticipant extends AbstractMavenLifecycleParti
 						.toUpperCase(Locale.ROOT)))
 			.addTypeAnnotationsToSymbol(getBooleanValue(config, "addTypeAnnotationsToSymbol",
 					resolveProperty(project, "nullability.addTypeAnnotationsToSymbol", "true")))
+			.nullAwayOptions(parseNullAwayOptions(config, project))
 			.build();
+	}
+
+	/**
+	 * Collects the additional NullAway options from the {@code <nullAwayOptions>}
+	 * configuration element and from the {@code nullability.nullAwayOptions.*} project
+	 * properties. The configuration element wins over the property of the same option
+	 * name.
+	 * @param config the plugin configuration, may be {@code null}
+	 * @param project the Maven project
+	 * @return the additional NullAway options keyed by option name
+	 * @throws MavenExecutionException if an option name or value is not usable as an
+	 * ErrorProne option
+	 */
+	private Map<String, String> parseNullAwayOptions(Xpp3Dom config, MavenProject project)
+			throws MavenExecutionException {
+		Map<String, String> options = new LinkedHashMap<>();
+		for (String propertyName : project.getProperties().stringPropertyNames()) {
+			if (propertyName.startsWith(NULLAWAY_OPTIONS_PROPERTY_PREFIX)) {
+				options.put(propertyName.substring(NULLAWAY_OPTIONS_PROPERTY_PREFIX.length()),
+						project.getProperties().getProperty(propertyName));
+			}
+		}
+		Xpp3Dom optionsConfig = (config != null) ? config.getChild("nullAwayOptions") : null;
+		if (optionsConfig != null) {
+			for (Xpp3Dom option : optionsConfig.getChildren()) {
+				options.put(option.getName(), option.getValue());
+			}
+		}
+		Map<String, String> validated = new LinkedHashMap<>();
+		for (Map.Entry<String, String> entry : options.entrySet()) {
+			String name = trimToEmpty(entry.getKey());
+			String value = trimToEmpty(entry.getValue());
+			validateNullAwayOption(name, value, project);
+			validated.put(name, value);
+		}
+		return validated;
+	}
+
+	private void validateNullAwayOption(String name, String value, MavenProject project)
+			throws MavenExecutionException {
+		if (name.isEmpty() || value.isEmpty()) {
+			throw new MavenExecutionException("[nullability] A nullAwayOptions entry must have a name and a value"
+					+ " but was '" + name + "'='" + value + "'.", project.getFile());
+		}
+		if (containsWhitespace(name) || containsWhitespace(value) || name.indexOf('=') >= 0) {
+			throw new MavenExecutionException(
+					"[nullability] The nullAwayOptions entry '" + name + "'='" + value
+							+ "' cannot be passed to ErrorProne because the option name or value contains"
+							+ " whitespace or '='. Options are appended to a single -Xplugin:ErrorProne argument.",
+					project.getFile());
+		}
+	}
+
+	private static boolean containsWhitespace(String value) {
+		return value.chars().anyMatch(Character::isWhitespace);
+	}
+
+	private static String trimToEmpty(String value) {
+		return (value != null) ? value.trim() : "";
 	}
 
 	private String resolveProperty(MavenProject project, String propertyName, String defaultValue) {

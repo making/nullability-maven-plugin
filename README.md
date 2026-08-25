@@ -125,12 +125,55 @@ All configuration parameters can be set either in the plugin `<configuration>` b
 | `nullAwaySeverity`           | `nullability.nullAwaySeverity`           | `error`                          | Severity for the NullAway check: `error`, `warn`, or `off`             |
 | `requireExplicitNullMarkingSeverity` | `nullability.requireExplicitNullMarkingSeverity` | `error`                  | Severity for the `RequireExplicitNullMarking` check: `error`, `warn`, or `off` |
 | `addTypeAnnotationsToSymbol` | `nullability.addTypeAnnotationsToSymbol` | `true`                           | Add `-XDaddTypeAnnotationsToSymbol=true` to javac when JSpecify mode is on. Set to `false` if your JDK does not support this flag (e.g., Oracle JDK) |
+| `nullAwayOptions`            | `nullability.nullAwayOptions.<name>`     |                                  | Additional NullAway options, passed as `-XepOpt:NullAway:<name>=<value>` (see [Setting arbitrary NullAway options](#setting-arbitrary-nullaway-options)) |
 | `skip`                       | `nullability.skip`                       | `false`                          | Skip the plugin                                                        |
 
 Since NullAway 0.12.11, any annotation with the simple name `@Contract` is automatically recognized regardless of package (e.g. `org.springframework.lang.Contract`, `org.assertj.core.internal.annotation.Contract`). The `customContractAnnotations` parameter is only needed when:
 
 - Using a contract annotation whose simple name is not `Contract`
 - Using an older NullAway version (pre-0.12.11) that requires explicit registration
+
+### Setting arbitrary NullAway options
+
+NullAway has many [options](https://github.com/uber/NullAway/wiki/Configuration) that this plugin does not expose as dedicated parameters. Any of them can be set with `nullAwayOptions`, using the option name without the `-XepOpt:NullAway:` prefix as the element name:
+
+```xml
+<plugin>
+    <groupId>am.ik.maven</groupId>
+    <artifactId>nullability-maven-plugin</artifactId>
+    <version>0.4.3</version>
+    <extensions>true</extensions>
+    <configuration>
+        <nullAwayOptions>
+            <KnownInitializers>com.example.api.SomeClass.init</KnownInitializers>
+            <TreatGeneratedAsUnannotated>true</TreatGeneratedAsUnannotated>
+        </nullAwayOptions>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>configure</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+The options above are appended to the ErrorProne argument as `-XepOpt:NullAway:KnownInitializers=com.example.api.SomeClass.init -XepOpt:NullAway:TreatGeneratedAsUnannotated=true`, for both main and test compilation.
+
+The same options can be set as Maven properties by prefixing the option name with `nullability.nullAwayOptions.`:
+
+```xml
+<properties>
+    <nullability.nullAwayOptions.KnownInitializers>com.example.api.SomeClass.init</nullability.nullAwayOptions.KnownInitializers>
+</properties>
+```
+
+An entry in the plugin `<configuration>` wins over the property with the same option name, and both win over the option that the plugin derives from the other parameters (for example `<CustomContractAnnotations>` overrides `customContractAnnotations`).
+
+Option names and values must not contain whitespace: all options are appended to a single `-Xplugin:ErrorProne` argument. The build fails with an explicit message if they do.
+
+Note that adding `-XepOpt:NullAway:...` to the `<compilerArgs>` of `maven-compiler-plugin` does not work: javac rejects it as an invalid flag unless it is part of the `-Xplugin:ErrorProne` argument.
 
 ### `generate-package-info` goal configuration
 

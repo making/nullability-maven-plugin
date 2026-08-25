@@ -15,9 +15,14 @@
  */
 package am.ik.maven.nullability;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.entry;
 
 class NullabilityConfigurationTest {
 
@@ -32,6 +37,7 @@ class NullabilityConfigurationTest {
 		assertThat(config.jspecifyMode()).isTrue();
 		assertThat(config.excludedPaths()).isEqualTo(".*/target/generated-sources/.*");
 		assertThat(config.addTypeAnnotationsToSymbol()).isTrue();
+		assertThat(config.nullAwayOptions()).isEmpty();
 	}
 
 	@Test
@@ -54,6 +60,17 @@ class NullabilityConfigurationTest {
 		assertThat(config.jspecifyMode()).isFalse();
 		assertThat(config.excludedPaths()).isEqualTo(".*/generated/.*");
 		assertThat(config.addTypeAnnotationsToSymbol()).isFalse();
+	}
+
+	@Test
+	void nullAwayOptionsAreCopiedAndUnmodifiable() {
+		Map<String, String> options = new LinkedHashMap<>();
+		options.put("KnownInitializers", "com.example.Service.init");
+		NullabilityConfiguration config = NullabilityConfiguration.builder().nullAwayOptions(options).build();
+		options.put("TreatGeneratedAsUnannotated", "true");
+		assertThat(config.nullAwayOptions()).containsExactly(entry("KnownInitializers", "com.example.Service.init"));
+		assertThatThrownBy(() -> config.nullAwayOptions().put("JSpecifyMode", "false"))
+			.isInstanceOf(UnsupportedOperationException.class);
 	}
 
 }
