@@ -25,7 +25,7 @@ Add the plugin to your `pom.xml`. If you are using Maven 3.8.x, you must also de
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.4.3</version>
+    <version>0.5.0</version>
     <extensions>true</extensions>
     <executions>
         <execution>
@@ -78,7 +78,7 @@ By placing `@NullMarked` in a `package-info.java` file, the annotation applies t
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.4.3</version>
+    <version>0.5.0</version>
     <extensions>true</extensions>
     <executions>
         <execution>
@@ -141,7 +141,7 @@ NullAway has many [options](https://github.com/uber/NullAway/wiki/Configuration)
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.4.3</version>
+    <version>0.5.0</version>
     <extensions>true</extensions>
     <configuration>
         <nullAwayOptions>
@@ -192,7 +192,7 @@ The `checking` and `skip` parameters from the table above also apply to this goa
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.4.3</version>
+    <version>0.5.0</version>
     <extensions>true</extensions>
     <configuration>
         <requireExplicitNullMarking>false</requireExplicitNullMarking>
@@ -341,7 +341,7 @@ To use ErrorProne 2.42.0 (so the build runs on JDK 17.0.19+) while keeping JSpec
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.4.3</version>
+    <version>0.5.0</version>
     <extensions>true</extensions>
     <configuration>
         <errorProneVersion>2.42.0</errorProneVersion>
@@ -362,7 +362,7 @@ Or, to disable JSpecify mode entirely (loses some advanced checking capabilities
 <plugin>
     <groupId>am.ik.maven</groupId>
     <artifactId>nullability-maven-plugin</artifactId>
-    <version>0.4.3</version>
+    <version>0.5.0</version>
     <extensions>true</extensions>
     <configuration>
         <errorProneVersion>2.42.0</errorProneVersion>
