@@ -17,7 +17,7 @@ on:
     - src/**
     - pom.xml
 env:
-  MAVEN4_VERSION: '4.0.0-rc-5'
+  MAVEN4_VERSION: '4.0.0-rc-6'
 
 jobs:
   test:
