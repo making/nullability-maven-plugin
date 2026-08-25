@@ -376,6 +376,38 @@ class CompilerConfigurerTest {
 	}
 
 	@Test
+	void mergesIntoErrorProneArgDeclaredWithAnotherElementName() throws Exception {
+		MavenProject project = new MavenProject();
+		project.setBuild(new Build());
+
+		Plugin compilerPlugin = new Plugin();
+		compilerPlugin.setGroupId("org.apache.maven.plugins");
+		compilerPlugin.setArtifactId("maven-compiler-plugin");
+		Xpp3Dom config = new Xpp3Dom("configuration");
+		Xpp3Dom compilerArgs = new Xpp3Dom("compilerArgs");
+		// maven-compiler-plugin accepts any element name for the items of compilerArgs
+		Xpp3Dom existingArg = new Xpp3Dom("compilerArg");
+		existingArg.setValue("-Xplugin:ErrorProne -XepOpt:NullAway:KnownInitializers=com.example.Service.init");
+		compilerArgs.addChild(existingArg);
+		Xpp3Dom existingPolicyArg = new Xpp3Dom("compilerArg");
+		existingPolicyArg.setValue("-XDcompilePolicy=simple");
+		compilerArgs.addChild(existingPolicyArg);
+		config.addChild(compilerArgs);
+		compilerPlugin.setConfiguration(config);
+		project.getBuild().addPlugin(compilerPlugin);
+
+		CompilerConfigurer.configure(project, NullabilityConfiguration.defaults());
+
+		Xpp3Dom updatedArgs = ((Xpp3Dom) compilerPlugin.getConfiguration()).getChild("compilerArgs");
+		String[] argValues = Arrays.stream(updatedArgs.getChildren()).map(Xpp3Dom::getValue).toArray(String[]::new);
+		// A second -Xplugin:ErrorProne argument makes javac fail with "plug-in not found"
+		assertThat(argValues).filteredOn(arg -> arg.startsWith("-Xplugin:ErrorProne")).hasSize(1);
+		assertThat(argValues).filteredOn("-XDcompilePolicy=simple"::equals).hasSize(1);
+		assertThat(existingArg.getValue()).contains("-XepOpt:NullAway:KnownInitializers=com.example.Service.init")
+			.contains("-XepOpt:NullAway:CheckContracts=true");
+	}
+
+	@Test
 	void extractOptionPrefixForEqualsOption() {
 		assertThat(CompilerConfigurer.extractOptionPrefix("-XepOpt:NullAway:OnlyNullMarked=true"))
 			.isEqualTo("-XepOpt:NullAway:OnlyNullMarked=");

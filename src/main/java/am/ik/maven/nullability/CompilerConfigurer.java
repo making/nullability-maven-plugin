@@ -171,8 +171,17 @@ public final class CompilerConfigurer {
 		return option;
 	}
 
+	/**
+	 * Finds an existing compiler argument starting with the given prefix. Every child
+	 * element is inspected because {@code compilerArgs} is a plain list: the
+	 * {@code maven-compiler-plugin} accepts any element name (commonly {@code <arg>}, but
+	 * {@code <compilerArg>} is used as well) for its items.
+	 * @param compilerArgs the {@code compilerArgs} element
+	 * @param prefix the argument prefix to look for
+	 * @return the matching element, or {@code null} if there is none
+	 */
 	private static Xpp3Dom findArgByPrefix(Xpp3Dom compilerArgs, String prefix) {
-		for (Xpp3Dom child : compilerArgs.getChildren("arg")) {
+		for (Xpp3Dom child : compilerArgs.getChildren()) {
 			if (child.getValue() != null && child.getValue().startsWith(prefix)) {
 				return child;
 			}
@@ -283,7 +292,7 @@ public final class CompilerConfigurer {
 	}
 
 	private static void addArgIfAbsent(Xpp3Dom compilerArgs, String value) {
-		for (Xpp3Dom child : compilerArgs.getChildren("arg")) {
+		for (Xpp3Dom child : compilerArgs.getChildren()) {
 			if (value.equals(child.getValue())) {
 				return;
 			}

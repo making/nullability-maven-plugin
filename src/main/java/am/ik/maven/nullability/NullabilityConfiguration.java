@@ -18,6 +18,9 @@ package am.ik.maven.nullability;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -41,11 +44,22 @@ import java.util.Properties;
  * @param addTypeAnnotationsToSymbol whether to add the
  * {@code -XDaddTypeAnnotationsToSymbol=true} javac argument when JSpecify mode is enabled
  * (since 0.4.0)
+ * @param nullAwayOptions additional NullAway options keyed by option name, emitted as
+ * {@code -XepOpt:NullAway:<name>=<value>}. Entries override the options derived from the
+ * other parameters (since 0.5.0)
  */
 public record NullabilityConfiguration(String errorProneVersion, String nullAwayVersion, Checking checking,
 		boolean requireExplicitNullMarking, String customContractAnnotations, boolean jspecifyMode,
 		String excludedPaths, Severity nullAwaySeverity, Severity requireExplicitNullMarkingSeverity,
-		boolean addTypeAnnotationsToSymbol) {
+		boolean addTypeAnnotationsToSymbol, Map<String, String> nullAwayOptions) {
+
+	/**
+	 * Canonical constructor that defensively copies {@code nullAwayOptions}.
+	 */
+	public NullabilityConfiguration {
+		nullAwayOptions = (nullAwayOptions == null) ? Map.of()
+				: Collections.unmodifiableMap(new LinkedHashMap<>(nullAwayOptions));
+	}
 
 	private static final Properties DEFAULTS = loadDefaults();
 
@@ -119,6 +133,8 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 		private Severity requireExplicitNullMarkingSeverity = Severity.ERROR;
 
 		private boolean addTypeAnnotationsToSymbol = true;
+
+		private final Map<String, String> nullAwayOptions = new LinkedHashMap<>();
 
 		private Builder() {
 		}
@@ -229,6 +245,31 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 		}
 
 		/**
+		 * Adds additional NullAway options keyed by option name. Each entry is emitted as
+		 * {@code -XepOpt:NullAway:<name>=<value>} and overrides the option of the same
+		 * name derived from the other parameters.
+		 * @param nullAwayOptions additional NullAway options
+		 * @return this builder
+		 * @since 0.5.0
+		 */
+		public Builder nullAwayOptions(Map<String, String> nullAwayOptions) {
+			this.nullAwayOptions.putAll(nullAwayOptions);
+			return this;
+		}
+
+		/**
+		 * Adds a single additional NullAway option.
+		 * @param name the option name without the {@code -XepOpt:NullAway:} prefix
+		 * @param value the option value
+		 * @return this builder
+		 * @since 0.5.0
+		 */
+		public Builder nullAwayOption(String name, String value) {
+			this.nullAwayOptions.put(name, value);
+			return this;
+		}
+
+		/**
 		 * Builds a new {@link NullabilityConfiguration} from the current builder state.
 		 * @return a new {@link NullabilityConfiguration}
 		 */
@@ -236,7 +277,7 @@ public record NullabilityConfiguration(String errorProneVersion, String nullAway
 			return new NullabilityConfiguration(this.errorProneVersion, this.nullAwayVersion, this.checking,
 					this.requireExplicitNullMarking, this.customContractAnnotations, this.jspecifyMode,
 					this.excludedPaths, this.nullAwaySeverity, this.requireExplicitNullMarkingSeverity,
-					this.addTypeAnnotationsToSymbol);
+					this.addTypeAnnotationsToSymbol, this.nullAwayOptions);
 		}
 
 	}

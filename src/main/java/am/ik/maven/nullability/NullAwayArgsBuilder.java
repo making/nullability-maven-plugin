@@ -16,12 +16,19 @@
 package am.ik.maven.nullability;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Builds the {@code -Xplugin:ErrorProne} argument string for main or test compilation.
  */
 public final class NullAwayArgsBuilder {
+
+	/**
+	 * Prefix of a NullAway option passed to ErrorProne.
+	 */
+	static final String NULLAWAY_OPTION_PREFIX = "-XepOpt:NullAway:";
 
 	private NullAwayArgsBuilder() {
 	}
@@ -53,19 +60,8 @@ public final class NullAwayArgsBuilder {
 	 */
 	static List<String> buildNullAwayOptions(boolean forTests, NullabilityConfiguration config) {
 		List<String> options = new ArrayList<>();
-		options.add("-XepOpt:NullAway:OnlyNullMarked=true");
-		options.add("-XepOpt:NullAway:CheckContracts=true");
-		if (config.jspecifyMode()) {
-			options.add("-XepOpt:NullAway:JSpecifyMode=true");
-		}
-
-		if (config.customContractAnnotations() != null && !config.customContractAnnotations().isEmpty()) {
-			options.add("-XepOpt:NullAway:CustomContractAnnotations=" + config.customContractAnnotations());
-		}
-
-		if (forTests) {
-			options.add("-XepOpt:NullAway:HandleTestAssertionLibraries=true");
-		}
+		buildNullAwayOptionMap(forTests, config)
+			.forEach((name, value) -> options.add(NULLAWAY_OPTION_PREFIX + name + "=" + value));
 
 		options.add("-Xep:NullAway:" + config.nullAwaySeverity().name());
 
@@ -78,6 +74,34 @@ public final class NullAwayArgsBuilder {
 			options.add("-XepExcludedPaths:" + excludedPaths);
 		}
 
+		return options;
+	}
+
+	/**
+	 * Builds the {@code -XepOpt:NullAway:*} options keyed by option name. The options
+	 * configured via {@link NullabilityConfiguration#nullAwayOptions()} are applied last
+	 * so that they override the ones derived from the other parameters.
+	 * @param forTests whether this is for test compilation
+	 * @param config the nullability configuration
+	 * @return the NullAway options keyed by option name, in emission order
+	 */
+	private static Map<String, String> buildNullAwayOptionMap(boolean forTests, NullabilityConfiguration config) {
+		Map<String, String> options = new LinkedHashMap<>();
+		options.put("OnlyNullMarked", "true");
+		options.put("CheckContracts", "true");
+		if (config.jspecifyMode()) {
+			options.put("JSpecifyMode", "true");
+		}
+
+		if (config.customContractAnnotations() != null && !config.customContractAnnotations().isEmpty()) {
+			options.put("CustomContractAnnotations", config.customContractAnnotations());
+		}
+
+		if (forTests) {
+			options.put("HandleTestAssertionLibraries", "true");
+		}
+
+		options.putAll(config.nullAwayOptions());
 		return options;
 	}
 
