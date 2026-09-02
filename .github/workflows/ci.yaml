@@ -31,7 +31,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Set up JDK ${{ matrix.java }}
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6
       with:
         java-version: ${{ matrix.java }}
         distribution: 'liberica'
@@ -50,7 +50,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Set up JDK ${{ matrix.java }}
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6
       with:
         java-version: ${{ matrix.java }}
         distribution: 'liberica'
@@ -85,7 +85,7 @@ jobs:
           kv/data/cicd/gpg secring | GPG_SECRING ;
           kv/data/cicd/gpg passphrase | GPG_PASSPHRASE ;
     - name: Set up JDK 25
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6
       with:
         java-version: '25'
         distribution: 'liberica'
