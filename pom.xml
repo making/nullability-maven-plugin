@@ -19,7 +19,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.version>3.10.1</maven.version>
 		<spring-boot.version>4.2.0</spring-boot.version>
-		<errorprone.version>2.52.0</errorprone.version>
+		<errorprone.version>2.53.0</errorprone.version>
 		<nullaway.version>0.14.4</nullaway.version>
 	</properties>
 	<licenses>
