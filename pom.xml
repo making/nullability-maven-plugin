@@ -193,6 +193,8 @@
 					<publishingServerId>central</publishingServerId>
 					<autoPublish>true</autoPublish>
 					<waitUntil>published</waitUntil>
+					<!-- Central publishing can exceed the default 1800s without failing -->
+					<waitMaxTime>3600</waitMaxTime>
 				</configuration>
 			</plugin>
 		</plugins>
